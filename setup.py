@@ -1,0 +1,23 @@
+import io
+
+from setuptools import find_packages
+from setuptools import setup
+
+with io.open("README.md", "rt", encoding="utf8") as f:
+    readme = f.read()
+
+setup(
+    name="creepo",
+    version="1.0.0",
+    url="https://dooleydiligent.github.com/creepo/",
+    license="BSD",
+    maintainer="Lane Holcombe",
+    maintainer_email="lane@joeandlane.com",
+    description="A caching repo for maven, npm, pip, and other packages.",
+    long_description=readme,
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=["flask"],
+    extras_require={"test": ["pytest", "coverage"]},
+)
