@@ -1,3 +1,6 @@
+"""
+creepo - the caching repository server
+"""
 import os
 
 from flask import Flask

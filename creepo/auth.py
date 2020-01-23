@@ -1,3 +1,6 @@
+"""
+auth - the auth module
+"""
 import functools
 
 from flask import Blueprint

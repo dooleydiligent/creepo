@@ -22,3 +22,10 @@ coverage run -m pytest
 coverage report
 coverage html  # open htmlcov/index.html in a browser
 ```
+
+## Code quality
+```
+pip install pylint-json2html
+pip install pylint
+pylint creepo | pylint-json2html -o creepo-lint.html
+```
