@@ -6,7 +6,7 @@ python -m virtualenv ./env
 Use [flask](https://github.com/pallets/flask)
 
 ```
-pip install flash
+pip install flash requests lxml
 ```
 
 Code quality [demo](https://github.com/pallets/flask/tree/master/examples/tutorial)
@@ -28,4 +28,8 @@ coverage html  # open htmlcov/index.html in a browser
 pip install pylint-json2html
 pip install pylint
 pylint creepo | pylint-json2html -o creepo-lint.html
+```
+# Run it
+```
+flask run
 ```
