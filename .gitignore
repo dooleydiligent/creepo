@@ -4,3 +4,5 @@ htmlcov
 *.pyc
 instance
 *.html
+node_modules
+dist

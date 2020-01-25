@@ -1,12 +1,13 @@
 ## Create a virtual environment
 ```
+cd server
 python -m virtualenv ./env
 . env/bin/activate
 ```
 Use [flask](https://github.com/pallets/flask)
 
 ```
-pip install flash requests lxml
+pip install -r requirements.txt
 ```
 
 Code quality [demo](https://github.com/pallets/flask/tree/master/examples/tutorial)
@@ -31,5 +32,5 @@ pylint creepo | pylint-json2html -o creepo-lint.html
 ```
 # Run it
 ```
-flask run
+python app.py
 ```
