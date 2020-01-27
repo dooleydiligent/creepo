@@ -16,6 +16,8 @@ import requests
 from auth import login_required
 from db import get_db
 
+from repository.Proxy import Proxy
+
 bp = Blueprint('proxy', __name__, url_prefix='/proxy')
 
 @bp.route('/<path:path>')
@@ -26,13 +28,13 @@ def index(path):
     protocol = splitpath.pop(0)
     host = splitpath.pop(0)
     path = '/'.join(splitpath)
-    print 'PATH: {path} ? QUERY: {query}'.format(path=path,query=request.query_string)
-    print '[{protocol}]/[{host}]/[{path}]'.format(protocol=protocol,host=host,path=path)
+#    print 'PATH: {path} ? QUERY: {query}'.format(path=path,query=request.query_string)
+#    print '[{protocol}]/[{host}]/[{path}]'.format(protocol=protocol,host=host,path=path)
 
-    if (request.query_string != ''):
-      print('trying to get {protocol}://{host}/{path}?{query}'.format(protocol=protocol, host=host, path=path, query=request.query_string))
-    else:
-      print('trying to get {protocol}://{host}/{path}'.format(protocol=protocol, host=host, path=path))
+#    if (request.query_string != ''):
+#      print('trying to get {protocol}://{host}/{path}?{query}'.format(protocol=protocol, host=host, path=path, query=request.query_string))
+#    else:
+#      print('trying to get {protocol}://{host}/{path}'.format(protocol=protocol, host=host, path=path))
 
     headers = {k: v for k, v in request.headers.items()}
     headers['Host'] = '{host}'.format(host=host)
@@ -40,12 +42,14 @@ def index(path):
     if request.query_string != '':
       newurl = '{newurl}?{query}'.format(newurl=newurl,query=request.query_string)
 
-    print 'Getting {newurl}'.format(newurl=newurl)
+#    print 'Getting {newurl}'.format(newurl=newurl)
 
     r = requests.get(newurl, headers=headers)
 
-    print 'Content-Type: ', r.headers['content-type']
+#    print 'Content-Type: ', r.headers['content-type']
 
+    p = Proxy(__name__, request.method, path, request.query_string)
+    print('Proxying TYPE: {type} {method} {path} {q}'.format(type=p.type, method=p.method, path=p.path, q=p.query))
     resp = make_response('temp')
 
     if r.headers['content-type'].lower().startswith('text/html'):
@@ -85,7 +89,7 @@ def index(path):
 
     headers = {}
     for k, v in request.headers.items():
-      print('Headers: {k} = {v}'.format(k=k,v=v))
+#      print('Headers: {k} = {v}'.format(k=k,v=v))
       headers[k] = v
     resp.headers = headers
     return resp

@@ -32,5 +32,25 @@ pylint creepo | pylint-json2html -o creepo-lint.html
 ```
 # Run it
 ```
-python app.py
+python .
+```
+
+# Maven proxy repo
+```
+mvn dependency:get \
+    -DrepoUrl=http://localhost:5000/m2/ \
+    -Dartifact=org.sonatype.nexus.plugins:nexus-plugins:3.19.0-01 \
+    -s ./mvn/settings.xml
+```
+
+# npm proxy repo
+```
+cd client
+npm install --registry=http://localhost:5000/npm/
+```
+
+# pip proxy repo
+```
+cd server
+pip install -r requirements.txt -i http://localhost:5000/pip/
 ```

@@ -1,28 +1,36 @@
 <template>
-  <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
-    <router-view/>
-  </div>
+  <component :is="layout">
+    <router-view :layout.sync="layout"/>
+  </component>
 </template>
 
-<style>
-#app {
-  margin-top: 60px
+<script>
+export default {
+  name: `App`,
+  data() {
+    return {
+      layout: `div`,
+    };
+  },
+};
+</script>
+
+<style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
 }
 
-#nav {
-  padding: 30px;
+html {
+  line-height: 1.6;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+p {
+  &:not(:first-child) {
+    margin-top: 1.25em;
+  }
 }
 </style>
