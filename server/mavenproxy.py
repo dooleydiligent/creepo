@@ -1,47 +1,46 @@
-from flask import Blueprint
-from flask import flash
-from flask import g
-from flask import make_response
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
-from werkzeug.exceptions import abort
+from bottle import Bottle, request, route, run
 
 import lxml.etree as ET
 import requests
-
-from auth import login_required
-from db import get_db
+import tempfile
 
 from repository.Proxy import Proxy
 
-bp = Blueprint('mavenproxy', __name__, url_prefix='/m2')
-print('registering {proxy}'.format(proxy=bp.url_prefix))
 
+app = Bottle()
 # Proxy all requests to upstreamurl
 #maven = Proxy(__name__, 'https://repo.maven.apache.org/maven2')
 maven = Proxy(__name__, 'http://localhost:8081/repository/PUBLIC/')
 
-def callback(input):
-  return input
+def callback(input, original_request):
+  # TODO: Have the caller suggest the local file path
+  print('callback: save the response to a local file')
+  content = input.read()
 
-@bp.route('/<path:path>')
+  with tempfile.NamedTemporaryFile(delete=False) as temp:
+    print('tempfile name is {name}'.format(name=temp.name))
+    temp.write(content)
+    temp.flush()
+  print('wrote tempfile')
+  f = open(temp.name, 'rb')
+  return f
+
+@app.route('/<path:path>')
 def index(path):
-    '''Proxy a maven request.'''
+  '''Proxy a maven request.'''
 
-    newpath = '{path}'.format(path=path)
-    if request.query_string != '':
-      newpath = '{newurl}?{query}'.format(newurl=newpath,query=request.query_string)
+  print('{method} {name}.index({path})'.format(method=request.method, name=__name__, path=path))
+  newpath = '{path}'.format(path=path)
+  if request.query_string != '':
+    newpath = '{newurl}?{query}'.format(newurl=newpath,query=request.query_string)
 
-    method = request.method
-    newrequest = dict()
-    newrequest['method'] = request.method
-    newrequest['path'] = newpath
-    newrequest['headers'] = request.headers
-    newrequest['storage'] = 'maven'
-    r = maven.proxy(newrequest)
-
-    resp = make_response(callback(r))
-    # Consider replacing resp.headers
-    return resp
+  method = request.method
+  newrequest = dict()
+  newrequest['method'] = request.method
+  newrequest['path'] = newpath
+  newrequest['headers'] = request.headers
+  newrequest['storage'] = 'maven'
+  newrequest['actual_request'] = request
+  resp = maven.proxy(newrequest, callback)
+  # Consider replacing resp.headers
+  return resp

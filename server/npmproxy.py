@@ -1,14 +1,5 @@
+from bottle import Bottle, request, route, run
 
-from flask import Blueprint
-from flask import flash
-from flask import g
-from flask import make_response
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
-from werkzeug.exceptions import abort
-from werkzeug.wrappers import Response
 import io
 import json
 import lxml.etree as ET
@@ -17,15 +8,16 @@ import requests
 import tempfile
 import urllib3
 
-from auth import login_required
-from db import get_db
+# from auth import login_required
+# from db import get_db
 
-from file_like import IOInterface
+# from file_like import IOInterface
 from repository.Proxy import Proxy
 
-bp = Blueprint('npmproxy', __name__, url_prefix='/npm')
-print('registering {proxy}'.format(proxy=bp.url_prefix))
-
+# bp = Blueprint('npmproxy', __name__, url_prefix='/npm')
+# print('registering {proxy}'.format(proxy=bp.url_prefix))
+app = Bottle()
+print('registering /npm')
 # Proxy all requests to upstreamurl
 #proxy = Proxy(__name__, 'https://registry.npmjs.org/')
 proxy = Proxy(__name__, 'http://localhost:8081/repository/npm/')
@@ -35,7 +27,7 @@ def before_request(path, url):
   return url
 
 def after_request(url, response):
-  print('after_request({url}, {status})'.format(url=url, status=response.status))
+  print('after_request({url})'.format(url=url))
 
 def make_self_relative(tarball):
   # parse tarball to a url
@@ -44,7 +36,7 @@ def make_self_relative(tarball):
   url_as_string = url
   return url_as_string
 
-def noopcallback(input):
+def noopcallback(input, original_request):
   print('noopcallback')
   with tempfile.NamedTemporaryFile(delete=False) as temp:
     print('tempfile name is {name}'.format(name=temp.name))
@@ -54,7 +46,7 @@ def noopcallback(input):
   f = open(temp.name, 'rb')
   return f
         
-def callback(input):
+def callback(input, original_request):
   print('callback {cb}'.format(cb=`callback`))
   # rewrite the file before sending it
   # Consider adding an extension that is a timestamp.
@@ -91,7 +83,7 @@ def callback(input):
   f = open(temp.name, 'rb')
   return f
 
-@bp.route('/<path:path>')
+@app.route('/<path:path>')
 def index(path):
     '''Proxy a repo request.'''
     print('The request.url is {url}'.format(url=request.url))
@@ -105,17 +97,19 @@ def index(path):
     newrequest = dict()
     newrequest['method'] = request.method
     newrequest['headers'] = request.headers
+    newrequest['actual_request'] = request
+    actual_callback = noopcallback
     if path.startswith('tarballs'):
       newrequest['storage'] = 'npm/tarballs'
       newrequest['path'] = '/'.join(newpath.split('/')[1:])
-      response = proxy.proxy(newrequest, noopcallback)
     else:
       newrequest['storage'] = 'npm'
       newrequest['path'] = newpath
-      response = proxy.proxy(newrequest, callback)  
+      actual_callback = callback
 
-    after_request(path, response)
+    resp = proxy.proxy(newrequest, actual_callback)  
+    after_request(path, resp)
 
     # resp = make_response(proxy)
     # Consider replacing resp.headers
-    return response
+    return resp

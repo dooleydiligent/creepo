@@ -1,7 +1,5 @@
-Flask==1.0.2
-Flask-Cors==3.0.7
+bottle==0.12.18
 requests==2.22.0
 lxml==4.4.2
 urllib3==1.25.8
-suds
-suds
+paste
