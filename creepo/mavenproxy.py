@@ -5,13 +5,11 @@ import os
 import requests
 import tempfile
 
-from repository.Proxy import Proxy
-from repository.Logger import Logger
+from creepo.repository.Proxy import Proxy
+from creepo.repository.Logger import Logger
 
 app = Bottle()
-# Proxy all requests to upstreamurl
-#maven = Proxy(__name__, 'https://repo.maven.apache.org/maven2')
-maven = Proxy(__name__, 'http://localhost:8081/repository/PUBLIC/')
+maven = Proxy(__name__, os.environ.get('MAVEN_PROXY', 'https://repo.maven.apache.org/maven2'))
 logger = Logger(__name__)
 def callback(input, outpath):
   logger.debug('callback: save the response to a local file')
@@ -22,8 +20,6 @@ def callback(input, outpath):
   outfile.close()
   logger.debug('wrote {file}'.format(file=outpath))
   return outpath
-#  f = open(outpath, 'rb')
-#  return f
 
 @app.route('/<path:path>')
 def index(path):
@@ -44,11 +40,6 @@ def index(path):
   newrequest['content_type'] = 'application/xml'
   resp = maven.proxy(newrequest, callback)
 
-#  logger.debug('Response content-type is {content_type}'.format(content_type=resp.headers.get('content-type')))
-#  # Consider replacing resp.headers
-#  logger.debug('resp.status is {status}'.format(status=resp.status))
-#  logger.debug('resp.content is {content}'.format(content=resp.body))
-#  return BaseResponse(body=resp.body, status=resp.status, headers={ 'content-type': resp.headers.get('content-type')})
   content = None
   status = 404
   if resp:

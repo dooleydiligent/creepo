@@ -8,14 +8,13 @@ import requests
 import tempfile
 import urllib3
 
-from repository.Logger import Logger
-from repository.Proxy import Proxy
+from creepo.repository.Logger import Logger
+from creepo.repository.Proxy import Proxy
 
 logger = Logger(__name__)
 logger.debug('registering {name}'.format(name=__name__))
 app = Bottle()
-proxy = Proxy(__name__, 'http://localhost:8081/repository/pypi-proxy/')
-
+proxy = Proxy(__name__, os.environ.get('PYPI_PROXY', 'https://pypi.python.org/simple'))
 def before_request(path, url):
   logger.info('before_request({path}, {url})'.format(path=path, url=url))
   return url

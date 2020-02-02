@@ -1,0 +1,5 @@
+Wrap this in a docker build
+
+Build a front end in Vue, just for the challenge
+
+Build out proxies for apk, bower, apt, docker and other common repositories

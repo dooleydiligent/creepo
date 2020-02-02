@@ -4,7 +4,7 @@ import lxml.etree as ET
 
 import requests
 import tempfile
-from repository.Proxy import Proxy
+from creepo.repository.Proxy import Proxy
 
 app = Bottle()
 print('registering /proxy')
@@ -37,13 +37,6 @@ def index(path):
     protocol = splitpath.pop(0)
     host = splitpath.pop(0)
     path = '/'.join(splitpath)
-#    print 'PATH: {path} ? QUERY: {query}'.format(path=path,query=request.query_string)
-#    print '[{protocol}]/[{host}]/[{path}]'.format(protocol=protocol,host=host,path=path)
-
-  #  if request.query_string != '':
-  #    print('trying to get {protocol}://{host}/{path}?{query}'.format(protocol=protocol, host=host, path=path, query=request.query_string))
-  #  else:
-  #    print('trying to get {protocol}://{host}/{path}'.format(protocol=protocol, host=host, path=path))
 
     headers = {k: v for k, v in request.headers.items()}
     headers['Host'] = '{host}'.format(host=host)
@@ -74,7 +67,6 @@ def index(path):
       # Make the xhtml response point back to this host
       # TODO: make this better
       parser = ET.XMLParser(recover=True)
-#      print('trying to read content {content}'.format(content=resp.body))
       doc = resp.body
       try:
         tree  = ET.fromstring(doc, parser=parser)
@@ -122,7 +114,5 @@ def index(path):
 
     headers = {}
     for k, v in resp.headers.items():
-#      print('Headers: {k} = {v}'.format(k=k,v=v))
       headers[k] = v
-    # resp.headers = headers
     return resp

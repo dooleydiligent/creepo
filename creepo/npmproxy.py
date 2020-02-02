@@ -8,18 +8,14 @@ import requests
 import tempfile
 import urllib3
 
-from repository.Logger import Logger
-from repository.Proxy import Proxy
-
-# Proxy all requests to upstreamurl
-#proxy = Proxy(__name__, 'https://registry.npmjs.org/')
+from creepo.repository.Logger import Logger
+from creepo.repository.Proxy import Proxy
 
 logger = Logger(__name__)
 logger.debug('registering {name}'.format(name=__name__))
 
 app = Bottle()
-proxy = Proxy(__name__, 'http://localhost:8081/repository/npm/')
-
+proxy = Proxy(__name__, os.environ.get('NPM_PROXY', 'https://registry.npmjs.org'))
 def before_request(path, url):
   logger.debug('before_request({path}, {url})'.format(path=path, url=url))
   return url
@@ -46,42 +42,28 @@ def callback(input, outpath):
   data = json.load(input)
   input.close()
   package_name = data['name']
-#  logger.debug('finished loading {filename} for {package}'.format(filename=proxy.filename, package=package_name))
   for version in data['versions']:
     dist = data['versions'][version]['dist']
     if dist:
-#      logger.debug('found version[{version}].dist'.format(version=version))
       tarball = dist['tarball']
       if tarball:
-#        logger.debug('found version {v} tarball {t}'.format(v=version, t=tarball))
         # Replace the tarball with a value that points back to yourself
         relevant_parts = -3
         if package_name.startswith('@'):
           relevant_parts = -4
         last_three = '/'.join(tarball.split('/')[relevant_parts:])
-#        logger.debug('last_threeOrFour is {last_three}'.format(last_three=last_three))
         new_tarball = urllib3.util.Url(scheme='http', host='localhost', port=5000, path='/npm/tarballs/{path}'.format(path=last_three))
         data['versions'][version]['dist']['tarball'] = str(new_tarball)
-#        logger.debug('Changed tarball url from {f} to {newurl}'.format(f=tarball, newurl=new_tarball))
       else:
         logger.debug('did not find tarball for {v}'.format(v=version))
     else:
       logger.debug('did not find dist for {v}'.format(v=version))
 
-#  logger.debug('Writing content from package {name}'.format(name=package_name))
-#  logger.debug('Content is [{content}]'.format(content=data))
   content = json.dumps(data)
 
-  # with tempfile.NamedTemporaryFile(delete=False) as temp:
-  #   logger.debug('tempfile name is {name}'.format(name=temp.name))
-  #   temp.write(json.dumps(data).decode('utf-8'))
-  #   temp.flush()
-  # f = open(temp.name, 'rb')
-  # return f
   outfile = open(outpath, 'wb')
   outfile.write(content.encode(encoding='utf-8', errors='strict'))
   outfile.close()
-#  logger.debug('wrote {file}'.format(file=outpath))
   return outpath
 
 @app.route('/<path:path>')
@@ -119,6 +101,3 @@ def index(path):
         content = outfile.read()
         outfile.close()
     return content
-    # # resp = make_response(proxy)
-    # # Consider replacing resp.headers
-    # return resp

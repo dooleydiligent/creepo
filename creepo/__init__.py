@@ -1,20 +1,21 @@
 import os
 
 from bottle import Bottle, route, run
-from repository.Logger import Logger
+from creepo.repository.Logger import Logger
 
 logger = Logger('CREEPO')
 
+app = Bottle()
+
+@app.route("/hello")
+def hello():
+  logger.debug('Hello World!')
+  return "Hello, World!"
+
 def create_app(test_config=None):
   """Create and configure an instance of the Flask application."""
-  app = Bottle()
 
-  @app.route("/hello")
-  def hello():
-    logger.debug('Hello World!')
-    return "Hello, World!"
-
-  import mavenproxy, npmproxy, pipproxy
+  import creepo.mavenproxy, creepo.npmproxy, creepo.pipproxy
 #  import blog, mavenproxy, npmproxy, pipproxy, proxy
 #  app.mount('/blog', blog.app)
 #  app.mount('/proxy', proxy.app)
@@ -32,3 +33,5 @@ if __name__ == '__main__':
 #  httpserver.serve(application, host='0.0.0.0', port=5000, debug=True)
 
   run(app, server='paste', host='localhost', port=5000, debug=True)
+
+# __all__ = ["app"]

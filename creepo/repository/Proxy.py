@@ -7,7 +7,7 @@ import urllib3
 import shutil
 # https://github.com/pallets/werkzeug/blob/master/src/werkzeug/wrappers/base_request.py
 
-from repository.Logger import Logger
+from creepo.repository.Logger import Logger
 
 logger = Logger(__name__)
 
