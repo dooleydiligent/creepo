@@ -1,6 +1,6 @@
 # Creepo
-- a cachining multi-format repository proxy for small network usage
-======
+  - a cachining multi-format repository proxy for small network usage
+
 # Motivation
 Once in a while you find yourself on a network put together by unsupervised children.  In such case
 you may find a spurrious proxy or network other blocker which prevents your team from actually producing any code.
@@ -12,28 +12,25 @@ And always you must have already forgottem more than your network engineer will 
 Use Creepo to cache well used upstream repositories, such as npm, pip, and maven.  More will follow shortly.
 
 # Install
--------
 
-# clone the repository
+### clone the repository
 ```
+git clone git@github.com:dooleydiligent/creepo.git
 cd creepo
 ```
 
-# Create a virtualenv and activate it::
+# Create a virtualenv and activate it
 - Just do it with python 3.  Eventually you don't notice the pain
 ```
 python3 -m venv venv
 . venv/bin/activate
 ```
-Install Creepo::
+# Install Creepo
 ```
 pip install -e .
 ```
 
 # Run
----
-
-::
 ```
 export BOTTLE_APP=creepo
 export BOTTLE_ENV=development
@@ -42,15 +39,12 @@ python creepo >creepo.log 2>&1
 ```
 
 # Test
-----
-
-::
 ```
 pip3 install '.[test]'
 pytest
 ```
 
-Run with coverage report::
+# Run with coverage report
 ```
 coverage run -m pytest
 coverage report
