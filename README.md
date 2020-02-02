@@ -3,9 +3,9 @@
 
 # Motivation
 Once in a while you find yourself on a network put together by unsupervised children.  In such case
-you may find a spurrious proxy or network other blocker which prevents your team from actually producing any code.
+you may find a spurrious proxy or other blocker which prevents your team from actually producing any code because you can't reach the outside world.
 
-These are the times that you realize that you must be slightly smarter than the machines that you use.
+These are the times that you realize that you must be slightly smarter than the machines that you serve.
 
 And always you must have already forgottem more than your network engineer will ever know.
 
