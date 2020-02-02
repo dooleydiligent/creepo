@@ -1,0 +1,5 @@
+include LICENSE
+graft creepo/static
+graft creepo/templates
+graft tests
+global-exclude *.pyc
