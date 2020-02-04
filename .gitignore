@@ -6,3 +6,6 @@ instance
 *.html
 node_modules
 dist
+venv
+.vscode/
+creepo.egg-info/

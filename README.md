@@ -1,14 +1,23 @@
 ## Create a virtual environment
 ```
-cd server
-python -m virtualenv ./env
-. env/bin/activate
+python3 -m venv venv
+. venv/bin/activate
 ```
-Use [flask](https://github.com/pallets/flask)
+Install [creepo](https://github.com/dooleydiligent/creepo)
 
 ```
-pip install -r requirements.txt
+pip install -e .
 ```
+
+# Run it
+```
+export BOTTLE_APP=creepo
+export BOTTLE_ENV=development
+#$ flask init-db
+# flask run
+python creepo
+```
+
 
 Code quality [demo](https://github.com/pallets/flask/tree/master/examples/tutorial)
 
@@ -29,10 +38,6 @@ coverage html  # open htmlcov/index.html in a browser
 pip install pylint-json2html
 pip install pylint
 pylint creepo | pylint-json2html -o creepo-lint.html
-```
-# Run it
-```
-python .
 ```
 
 # Maven proxy repo
