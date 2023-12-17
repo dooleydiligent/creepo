@@ -12,7 +12,7 @@
       <id>creep</id>
       <mirrorOf>*</mirrorOf>
       <name>creep</name>
-      <url>http://localhost:5000/m2/</url>
+      <url>https://localhost:4443/m2/</url>
     </mirror>
   </mirrors>
 </settings>
