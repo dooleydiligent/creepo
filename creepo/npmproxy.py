@@ -1,105 +1,91 @@
-from bottle import Bottle, request, route, run
-
+"""An npm proxy"""
 import io
 import json
-import lxml.etree as ET
-import os
-import requests
-import tempfile
+
+from urllib.parse import urlparse
 import urllib3
 
-from logger import Logger
-from Proxy import Proxy
+import mime
 
-app = Bottle()
+import cherrypy
 
-def __init__():
-  logger = Logger(__name__)
-  logger.debug('registering {name}'.format(name=__name__))
-  proxy = Proxy(__name__, os.environ.get('NPM_PROXY', 'https://registry.npmjs.org'))
+from proxy import Proxy
 
-def before_request(path, url):
-  logger.debug('before_request({path}, {url})'.format(path=path, url=url))
-  return url
+class NpmProxy:  # pylint: disable=fixme
+    """The npm proxy"""
+    def __init__(self, config, logger):
+        self.logger = logger
+        self.config = config
+        self.key = "npm"
+        if self.key not in self.config:
+            self.config[self.key] = {'registry': 'https://registry.npmjs.org'}
 
-def after_request(url, response):
-  logger.debug('after_request({url})'.format(url=url))
+        self.proxy = Proxy(__name__, self.config[self.key])
+        self.logger.debug('NpmProxy instantiated with %s',
+                          self.config[self.key])
 
-def noopcallback(input, outpath):
-  logger.debug('noopcallback for {filename}'.format(filename=outpath))
+    def noopcallback(self, _input_bytes, _outpath):
+        """noopcallback"""
+        self.logger.debug('%s noopcallback for %s', __name__, _outpath)
+        self.proxy.persist(_input_bytes, _outpath, self.logger)
 
-  outfile = open(outpath, 'wb')
-  outfile.write(input.read())
-  input.close()
-  outfile.close()
-  logger.debug('wrote {file}'.format(file=outpath))
-  return outpath
+    def callback(self, _input_bytes, _outpath):
+        """callback - preprocess the file before saving it"""
 
-def callback(input, outpath):
-  logger.debug('callback {cb} for file {outpath}'.format(cb='callback', outpath=outpath))
-  # rewrite the file before sending it
-  # Consider adding an extension that is a timestamp.
-  # If a future request is TTL time after the last request then return it
+        data = json.load(io.BytesIO(_input_bytes))
 
-  data = json.load(input)
-  input.close()
-  package_name = data['name']
-  for version in data['versions']:
-    dist = data['versions'][version]['dist']
-    if dist:
-      tarball = dist['tarball']
-      if tarball:
-        # Replace the tarball with a value that points back to yourself
-        relevant_parts = -3
-        if package_name.startswith('@'):
-          relevant_parts = -4
-        last_three = '/'.join(tarball.split('/')[relevant_parts:])
-        new_tarball = urllib3.util.Url(scheme='http', host='localhost', port=5000, path='/npm/tarballs/{path}'.format(path=last_three))
-        data['versions'][version]['dist']['tarball'] = str(new_tarball)
-      else:
-        logger.debug('did not find tarball for {v}'.format(v=version))
-    else:
-      logger.debug('did not find dist for {v}'.format(v=version))
+        for version in data['versions']:
+            dist = data['versions'][version]['dist']
+            if dist:
+                tarball = dist['tarball']
+                if tarball:
+                    # Point the client back to us for resolution.
+                    new_tarball = urllib3.util.Url(
+                        scheme='https',
+                        host='localhost',   # TODO: get the listening public ip from config
+                        port=self.config['port'],
+                        path="/npm/tarballs/",
+                        query=tarball,
+                    )
+                    data['versions'][version]['dist']['tarball'] = str(
+                        new_tarball)
+                else:
+                    self.logger.warning(
+                        '%s Did not find tarball for %s', __name__, version)
+            else:
+                self.logger.warning(
+                    '%s Did not find dist for %s', __name__, version)
 
-  content = json.dumps(data)
+        content = json.dumps(data)
+        self.proxy.persist(bytes(content, encoding="utf-8"), _outpath, self.logger)
 
-  outfile = open(outpath, 'wb')
-  outfile.write(content.encode(encoding='utf-8', errors='strict'))
-  outfile.close()
-  return outpath
+    @cherrypy.expose
+    def npm(self, environ, start_response):
+        '''Proxy an npm request.'''
+        path = environ["REQUEST_URI"].removeprefix("/npm")
+        newpath = path
 
-@app.route('/<path:path>')
-def index(path):
-    '''Proxy a repo request.'''
-    logger.debug('The request.url is {url}'.format(url=request.url))
-    newpath = '{path}'.format(path=path)
-    logger.debug('newpath is {np}'.format(np=newpath))  
+        newrequest = {}
+        if len(mime.Types.of(path)) > 0:
+            newrequest['content_type'] = mime.Types.of(path)[
+                0].content_type
 
-    if request.query_string != '':
-      newpath = '{newurl}?{query}'.format(newurl=newpath,query=request.query_string)
+        newrequest['method'] = cherrypy.request.method
+        newrequest['headers'] = cherrypy.request.headers
+        newrequest['actual_request'] = cherrypy.request
 
-    method = request.method
-    newrequest = dict()
-    newrequest['method'] = request.method
-    newrequest['headers'] = request.headers
-    newrequest['actual_request'] = request
-    actual_callback = noopcallback
-    if path.startswith('tarballs'):
-      newrequest['storage'] = 'npm/tarballs'
-      newrequest['path'] = '/'.join(newpath.split('/')[1:])
-    else:
-      newrequest['storage'] = 'npm'
-      newrequest['path'] = newpath
-      actual_callback = callback
+        if len(path.split('?')) == 2:
+            new_remote = urlparse(path.split('?')[1])
+            newrequest['storage'] = 'npm/tarballs'
+            newrequest['path'] = new_remote.path
+            newhost = f"{new_remote.scheme}://{new_remote.netloc}"
+            self.logger.info(
+                '%s Create new proxy with host %s and path %s', __name__, newhost, new_remote.path)
+            dynamic_proxy = Proxy(__name__, {'registry': newhost})
+            return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
 
-    resp = proxy.proxy(newrequest, actual_callback)  
-    after_request(path, resp)
-    content = None
-    status = 404
-    if resp:
-      if os.path.exists(resp):
-        status = 200
-        outfile = open(resp, 'rb')
-        content = outfile.read()
-        outfile.close()
-    return content
+        newrequest['path'] = newpath
+        newrequest['storage'] = 'npm'
+        newrequest['content_type'] = 'application/octet-stream'
+        self.logger.info('%s Requesting file %s', __name__, newpath)
+        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
