@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "creepo"
+version = "1.0.0"
+description = "a configurable caching repo"
+authors = ["lane.holcombe <lane@joeandlane.com>"]
+
+[tool.poetry.dependencies]
+build = "*"
+cherrypy = "*"
+coverage = "*"
+lxml = "*"
+mime = "*"
+pytest = "*"
+python = "^3.9"
+requests = "*"
+routes = "*"
+pyopenssl = "*"
+
+[tool.poetry.dev-dependencies]
+tox = "^2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "creepo"
+authors = [{name = "lane.holcombe", email = "lane@joeandlane.com"}]
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+dependencies = [
+  "cherrypy",
+  "pytest",
+  "pytest-cov",
+  "coverage",
+]
+
+[project.urls]
+Homepage = "https://github.com/dooleydiligent/creepo"
+Issues = "https://github.com/dooleydiligent/creepo/issues"
+
+[project.optional-dependencies]
+test = ["tox", "pytest", "coverage"]
+lint = [ "black", "flake8"]
+#cov = ["pytest < 5.0.0", "pytest-cov[all]"]

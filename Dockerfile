@@ -1,27 +1,32 @@
-FROM debian:12-slim
+FROM python:3.9-slim
 
-RUN apt update -y && \
-  apt install -y python3 python3-venv
-
-ADD setup.* /app/
 ADD README.md /app/
-ADD MANIFEST.in /app/
+ADD LICENSE /app/
+ADD pyproject.toml /app/
+ADD tests/* /app/tests/
+ADD creepo/*   /app/creepo/
 
-#ADD client/* /app/client/
-ADD tests/test_creepo.py /app/tests/
-ADD creepo/* /app/creepo/
+ENV CREEPO_APP=creepo
+ENV CREEPO_ENV=development
+ENV HOME=/app
+ENV PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/app/.local/bin
+ARG USERNAME=creepo
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
-ENV BOTTLE_APP=creepo
-ENV BOTTLE_ENV=development
+RUN addgroup --gid $USER_GID $USERNAME 
+RUN adduser --uid $USER_UID $USERNAME --system --ingroup $USERNAME
+
+RUN chown $USERNAME: /app
 
 WORKDIR /app
 
-RUN python3 -m venv venv
+USER $USERNAME
 
-RUN . venv/bin/activate && pip install '.[test]' WebTest pytest-cov
-RUN . venv/bin/activate && coverage run -m pytest 
-RUN . venv/bin/activate && coverage report && coverage html
+RUN pip install --upgrade pip trustme .
+RUN python -m trustme
+RUN coverage run -m pytest
 
-RUN . venv/bin/activate && pip install -e .
+RUN coverage html --omit="*/test*"
 
 ENTRYPOINT ["python3", "creepo"]

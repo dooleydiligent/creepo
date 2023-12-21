@@ -4,10 +4,9 @@ import lxml.etree as ET
 
 import requests
 import tempfile
-from creepo.repository.Proxy import Proxy
+from Proxy import Proxy
 
 app = Bottle()
-print('registering /proxy')
 
 def callback(input, original_request):
   # TODO: Have the caller suggest the local file path
