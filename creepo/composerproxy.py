@@ -1,4 +1,8 @@
-"""A composer proxy"""
+"""
+
+A composer proxy
+
+"""
 import io
 import json
 import urllib.parse
@@ -10,9 +14,12 @@ import cherrypy
 
 from proxy import Proxy
 
-
 class ComposerProxy:
-    """A composer proxy"""
+    """
+
+    A composer proxy
+
+    """
 
     def __init__(self, config, logger):
         self.logger = logger
@@ -27,12 +34,20 @@ class ComposerProxy:
                           self.config[self.key])
 
     def noopcallback(self, _input_bytes, _outpath):
-        """noopcallback"""
+        """
+
+        noopcallback
+
+        """
         self.logger.debug('%s noopcallback for %s', __name__, _outpath)
         self.proxy.persist(_input_bytes, _outpath, self.logger)
 
     def callback(self, _input_bytes, _outpath):
-        """callback - replace source and dist urls with self-relative urls"""
+        """
+
+        callback - replace source and dist urls with self-relative urls
+
+        """
 
         data = json.load(io.BytesIO(_input_bytes))
 

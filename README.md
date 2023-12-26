@@ -106,3 +106,29 @@ cd demo/composer
 composer install
 
 ```
+### Use it as a docker proxy
+- This assumes you have configured an upstream mirror.  We cannot (yet) proxy registry-1.docker.io, but plan to in the future
+Using this [configuration](./config.yml)
+```
+# 
+# docker:
+#     registry: 'https://docker.tuscawilla.local:32000'
+#     cacert: '/home/lane/git/creepo/demo/docker/docker.tuscawilla.local.crt'
+#     credentials:
+#         username: 'docker'
+#         password: 'password'
+
+docker pull localhost:4443/pravega/pravega
+
+Using default tag: latest
+latest: Pulling from pravega/pravega
+a0d0a0d46f8b: Pull complete 
+083e16b808d4: Pull complete 
+16cb052eff29: Pull complete 
+7b7fe9910a72: Pull complete 
+a847de4745a5: Pull complete 
+08b71253a7a0: Downloading [>                                                  ]  1.622MB/196MB
+aa509fd13681: Download complete 
+3731688bad93: Download complete 
+
+```

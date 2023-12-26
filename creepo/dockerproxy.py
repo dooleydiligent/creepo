@@ -5,7 +5,6 @@ import cherrypy
 
 from proxy import Proxy
 
-
 class DockerProxy:
     """A docker proxy"""
 
