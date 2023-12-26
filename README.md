@@ -33,24 +33,6 @@ See https://gist.github.com/webknjaz/56cfb9f28a05017ea465982328b71d10 for some b
 # Get the client certificate from the running container
 docker cp creepo:/app/client.pem .
 
-# Update local ca-certificates
-sudo cp client.pem /usr/local/share/ca-certificates/creepo.crt
-sudo update-ca-certificates
-
-# Find your JAVA_HOME
-# import the client (ca) certificate
-# This assumes you are running in ubuntu 22.04+.  ymmv
-
-# Delete a previous certificate
-sudo keytool -delete -alias creepo \
-  -keystore  $(dirname $(dirname $(readlink -f $(which java))))/lib/security/cacerts \
-  -storepass changeit -noprompt
-
-# Add the new certificate
-sudo keytool -import -alias creepo -file client.pem \
-    -keystore  $(dirname $(dirname $(readlink -f $(which java))))/lib/security/cacerts \
-    -storepass changeit -noprompt
-
 ```
 ### Coverage report
 See the coverage report [in the running docker image](http://localhost:4443/coverage/index.html)
@@ -75,46 +57,52 @@ export CREEPO_ENV=development
 python creepo >creepo.log 2>&1
 ```
 
-### Test
-<<<<<<< HEAD
-=======
-```
-pip install '.[test]'
-```
-
-### Run with coverage report
->>>>>>> 5586084 (feat: update npm example (#35))
+### generate coverage report
 ```
 coverage run -m pytest
-```
-
-<<<<<<< HEAD
-### Run with coverage report
-=======
-### Use it as a Maven proxy repo
->>>>>>> 5586084 (feat: update npm example (#35))
-```
 coverage html --omit="*/test*"
 ```
 
-### Use it as a Maven proxy repo
+### Use it as a Maven proxy
 ```
-cd demo/mvn
+# You must first trust the creepo
+# Find your JAVA_HOME
+# import the client (ca) certificate
+# This assumes you are running in ubuntu 22.04+.  ymmv
+
+# Delete a previous certificate
+sudo keytool -delete -alias creepo \
+  -keystore  $(dirname $(dirname $(readlink -f $(which java))))/lib/security/cacerts \
+  -storepass changeit -noprompt
+
+# Add the new certificate
+sudo keytool -import -alias creepo -file client.pem \
+    -keystore  $(dirname $(dirname $(readlink -f $(which java))))/lib/security/cacerts \
+    -storepass changeit -noprompt
 
 mvn dependency:get \
     -DrepoUrl=https://localhost:4443/m2/ \
     -Dartifact=org.sonatype.nexus.plugins:nexus-plugins:2.12.1-01 \
-    -s ./settings.xml
+    -s ./demo/mvn/settings.xml
 ```
 
-### Use it as an npm proxy repo
+### Use it as an npm proxy
 ```
-cd client
-npm install --registry=http://localhost:5000/npm/
+npm install --cafile client.pem --registry=https://localhost:4443/npm/ http-server
+
+# debug with
+NODE_DEBUG=tls,https,http npm -ddd install --verbose --cafile client.pem --registry=https://localhost:4443/npm/
 ```
 
-### Use it as a pip proxy repo
+### Use it as a pip proxy 
 ```
-pip install -e . -i http://localhost:5000/pip/
+pip install . -i https://localhost:4443/pip --trusted-host localhost
 ```
 
+### Use it as a composer proxy
+- First install composer in some project (assumes you already have composer installed.  If not see [the documentation](https://packagist.org/) )
+```
+cd demo/composer
+composer install
+
+```

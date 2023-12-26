@@ -1,0 +1,29 @@
+{
+    "name": "creepo/creepo",
+    "description": "Demonstrate composer usage with creepo",
+    "autoload": {
+        "psr-0": {
+            "Creepo": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "lane",
+            "email": "lane@joeandlane.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://localhost:4443/p2/"
+        },
+        {
+            "packagist.org": false
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "phpunit/php-timer": "6.0.x-dev"
+    }
+}

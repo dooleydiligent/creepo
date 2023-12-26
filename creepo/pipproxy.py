@@ -1,96 +1,75 @@
-from bottle import Bottle, request, response, route, run
-
-import io
-import json
+"""The pip proxy"""
+from urllib.parse import urlparse
 import lxml.etree as ET
-import os
-import requests
-import tempfile
-import urllib3
 
-from logger import Logger
-from Proxy import Proxy
+import cherrypy
 
-app = Bottle()
+from proxy import Proxy
 
-def __init__():
-  logger = Logger(__name__)
-  logger.debug('registering {name}'.format(name=__name__))
-  proxy = Proxy(__name__, os.environ.get('PYPI_PROXY', 'https://pypi.python.org/simple'))
 
-def before_request(path, url):
-  logger.info('before_request({path}, {url})'.format(path=path, url=url))
-  return url
+class PipProxy:
+    """The pip proxy"""
 
-def after_request(url, status):
-  logger.info('after_request({url}, {status})'.format(url=url, status=status))
+    def __init__(self, config, logger):
+        self.logger = logger
+        self.config = config
+        self.key = 'pip'
+        if self.key not in self.config:
+            self.config[self.key] = {
+                'registry': 'https://pypi.org/simple', 'self': 'https://localhost:4443/pip'}
 
-def callback(input, return_path):
-  content = input.read()
-  input.close()
-  parser = ET.XMLParser(recover=True)
-  doc = content
-  tree  = ET.fromstring(doc, parser=parser)
-  if tree:
-    for node in tree.findall('.//a[@href]'):
-      href = node.get('href')
-      if href.find('/packages/') > -1:
-        logger.info('href is {href}'.format(href=href))
-        package = href.split('/packages/')[1]
-        
-        logger.info('package is {package}'.format(package=package))
-        newhref = '{localhost}/packages/{href}'.format(localhost='http://localhost:5000/pip', href=package)
-        logger.info('newhref is {newhref}'.format(newhref=newhref))
-        node.set('href', newhref)
-    doc = ET.tostring(tree)
-    
-  outfile = open(return_path, 'wb')
-  outfile.write(doc)
-  outfile.close()
-  logger.debug('wrote {file}'.format(file=return_path))
-  return return_path
+        self.proxy = Proxy(__name__, self.config[self.key])
+        self.logger.debug('PipProxy instantiated with %s',
+                          self.config[self.key])
 
-@app.route('/<path:path>', methods=("GET", "POST"))
-def index(path):
-    '''Proxy a pip repo request.'''
-    logger.info('The request.url is {url}'.format(url=request.url))
-    request_path = '{path}'.format(path=path)
-    logger.info('request_path is {np}'.format(np=request_path))  
+    def noopcallback(self, _input_bytes, _outpath):
+        """noopcallback"""
+        self.logger.debug('%s noopcallback for %s', __name__, _outpath)
+        self.proxy.persist(_input_bytes, _outpath, self.logger)
 
-    if request.method == 'POST':
-      logger.info('POSTED : {body}'.format(body=request.data))
-      parser = ET.XMLParser(recover=True)
-      doc = request.data
-      tree  = ET.fromstring(doc, parser=parser)
-      for node in tree.findall('.//methodName'):
-        logger.info('methodName is {methodName}'.format(methodName=node.text))
-      
-    if request.query_string != '':
-      request_path = '{newurl}?{query}'.format(newurl=request_path,query=request.query_string)
+    def callback(self, _input_bytes, _outpath):
+        """write the file to disk"""
+        content = _input_bytes
+        parser = ET.XMLParser(recover=True)
+        doc = content
+        tree = ET.fromstring(doc, parser=parser)
 
-    method = request.method
-    newrequest = dict()
-    newrequest['method'] = request.method
-    newrequest['headers'] = request.headers
-    newrequest['storage'] = 'pip'
-    if not request_path.startswith('packages/'):
-      newrequest['path'] = 'simple/{path}'.format(path=request_path)
-    else:
-      newrequest['path'] = request_path
-    newrequest['name'] = '.index.html'
-    newrequest['actual_request'] = request
-    resp = proxy.proxy(newrequest, callback)  
-    content = None
-    status = 404
-    if resp:
-      if os.path.exists(resp):
-        status = 200
-      if os.path.isdir(resp):
-        resp = os.path.join(resp, '...')
+        if tree is not None:
+            for node in tree.findall('.//a[@href]'):
+                href = node.get('href')
+                if href.find('/packages/') > -1:
+                    new_tarball = urlparse(
+                        href
+                    )
+                    newhref = f"{self.config['pip']['self']}{new_tarball.path}"
+                    node.set('href', newhref)
+            doc = ET.tostring(tree)
 
-      outfile = open(resp, 'rb')
-      content = outfile.read()
-      outfile.close()
+        self.proxy.persist(doc, _outpath, self.logger)
 
-    after_request(request_path, status)
-    return content
+    @cherrypy.expose
+    def pip(self, environ, start_response):
+        '''Proxy a pip repo request.'''
+        path = environ["REQUEST_URI"].removeprefix("/pip")
+        self.logger.info('%s The request.uri is %s', __name__, path)
+
+        newrequest = {}
+        newrequest['method'] = cherrypy.request.method
+        newrequest['headers'] = cherrypy.request.headers
+        newrequest['actual_request'] = cherrypy.request
+        # application/vnd.pypi.simple.v1+json, application/vnd.pypi.simple.v1+html, and text/html
+
+        newrequest['content_type'] = 'application/vnd.pypi.simple.v1+html'
+        newrequest['path'] = path
+
+        if path.startswith('/packages'):
+            newrequest['storage'] = 'npm/tarballs'
+            newhost = 'https://files.pythonhosted.org'
+            self.logger.info(
+                '%s Create new proxy with host %s and path %s', __name__, newhost, path)
+            dynamic_proxy = Proxy(__name__, {'registry': newhost})
+            return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
+
+        newrequest['storage'] = self.key
+
+        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
