@@ -47,10 +47,12 @@ See the coverage report [in the running docker image](http://localhost:4443/cove
 
 ### Create a virtualenv and activate it
 - Just do it with python 3.  Eventually you don't notice the pain
+
 ```
 python3 -m venv venv
 . venv/bin/activate
 ```
+
 ### Install Creepo
 ```
 pip install --upgrade pip poetry .
