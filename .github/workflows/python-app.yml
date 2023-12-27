@@ -39,4 +39,4 @@ jobs:
       run: |
         # mime and cherrypy cannot be found during testing - here but not locally
         pip install cherrypy mime
-        coverage run -m pytest creepo -v -l
+        coverage run -m pytest .
