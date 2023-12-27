@@ -19,6 +19,11 @@ requests = "^2.31.0"
 routes = "^2.5.1"
 pyopenssl = "^23.3.0"
 
+[tool.coverage.run]
+omit = [
+    "venv/*",
+]
+
 [tool.poetry.group.dev.dependencies]
 mime = "^0.1.0"
 tox = "^2.5"
