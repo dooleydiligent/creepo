@@ -22,22 +22,28 @@ Instead, Creepo is intended to be configured with a global proxy to act as a sor
 ### Install
 
 ### Clone the repository
+
 - [Visit the repository](https://github.com/dooleydiligent/creepo)
 - [PyDoc](https://dooleydiligent.github.io/creepo/creepo.html) **(needs work)**
 - [Unit Test Coverage](https://dooleydiligent.github.io/creepo/htmlcov/index.html) 
+
 ```
 git clone git@github.com:dooleydiligent/creepo.git
 cd creepo
 ```
 ### Build in docker
+
 ```
 docker build . -t creepo
 ```
 ### Run in docker
+
 ```
 docker run --rm --name creepo --net host creepo
 ```
+
 ### Use ssl by default
+
 ```
 See https://gist.github.com/webknjaz/56cfb9f28a05017ea465982328b71d10 for some background
 
@@ -45,7 +51,9 @@ See https://gist.github.com/webknjaz/56cfb9f28a05017ea465982328b71d10 for some b
 docker cp creepo:/app/client.pem .
 
 ```
+
 ### Coverage report
+
 See the coverage report [in the running docker image](http://localhost:4443/coverage/index.html)
 
 ### Create a virtualenv and activate it
