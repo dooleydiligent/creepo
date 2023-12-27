@@ -32,12 +32,18 @@ if __name__ == '__main__':
     if 'port' not in config:
         config['port'] = 4443
 
+    if 'proxy' in config:
+        logger.info('Using global proxy at %s', config['proxy'])
+
     cert = f"{PROJECT_DIR}/server.pem"
     key = f"{PROJECT_DIR}/server.key"
     client = f"{PROJECT_DIR}/client.pem"
 
-    logger.info(
-        msg=f"Configuring SSL version {ssl.OPENSSL_VERSION} with server {cert} and {key}")
+    logger.info('Configuring SSL version %s', ssl.OPENSSL_VERSION)
+    with open(client, 'r', encoding='utf-8') as f:
+        output = f.read()
+        f.close()
+        logger.info('Use the following certificate to secure your client(s)\n\n%s\n\n', output)
 
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',
@@ -47,6 +53,7 @@ if __name__ == '__main__':
         'server.ssl_private_key': key,
         'server.ssl_certificate_chain': client,
     })
+
     logger.debug('instantiating mavenProxy at /m2')
     cherrypy.tree.graft(MavenProxy(config, logger).m2, '/m2')
 
@@ -78,7 +85,7 @@ if __name__ == '__main__':
                             },
                         })
 
-    logger.info('starting the engine with config %s', config)
+    logger.info('\n\nStarting the engine with config %s', config)
     cherrypy.engine.start()
     cherrypy.engine.block()
-    logger.info('engine stopped')
+    logger.info('Engine stopped')

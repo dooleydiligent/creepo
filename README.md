@@ -1,5 +1,5 @@
 ### Creepo
-  - a cachining multi-format repository proxy for small network usage
+  - a caching, multi-format repository / proxy for small network usage
 
 ### Motivation
 Once in a while you find yourself on a network put together by unsupervised children.  In such case
@@ -9,7 +9,15 @@ These are the times that you realize that you must be slightly smarter than the 
 
 And always you must have already forgotten more than your network engineer will ever know.
 
-Use Creepo to cache well used upstream repositories, such as npm, pip, and maven.  More will follow shortly.
+By default, Creepo doesn't actually cache anything.  That would be creepy.  And potentially unsafe.
+
+Instead, Creepo is intended to be configured with a global proxy to act as a sort of gateway to various artifact repositories, either inside or outside of the local network.
+
+- Use Creepo behind a corporate firewall to proxy well used upstream repositories, such as npm, pip, maven, composer, and docker.
+
+- Use Creepo to take a "snapshot" of build dependencies for later analysis, such as license query or vulnerability scans.
+
+- Use Creepo to facilitate an "air-gapped" installation of some other application.
 
 ### Install
 
@@ -26,7 +34,7 @@ docker build . -t creepo
 ```
 docker run --rm --name creepo --net host creepo
 ```
-### use ssl by default
+### Use ssl by default
 ```
 See https://gist.github.com/webknjaz/56cfb9f28a05017ea465982328b71d10 for some background
 
@@ -47,15 +55,14 @@ python3 -m venv venv
 ```
 pip install --upgrade pip poetry .
 poetry install -C creepo --no-interaction --no-root
-
 ```
 
 ### Run
-
+```
 python creepo 
 ```
 
-### generate coverage report
+### Generate coverage report
 ```
 coverage run -m pytest
 coverage html --omit="*/test*"
@@ -63,7 +70,7 @@ coverage html --omit="*/test*"
 
 ### Use it as a Maven proxy
 ```
-# You must first trust the creepo
+# You must first trust the creep
 # Find your JAVA_HOME
 # import the client (ca) certificate
 # This assumes you are running in ubuntu 22.04+.  ymmv
@@ -98,14 +105,17 @@ pip install . -i https://localhost:4443/pip --trusted-host localhost
 ```
 
 ### Use it as a composer proxy
-- First install composer in some project (assumes you already have composer installed.  If not see [the documentation](https://packagist.org/) )
+- First install composer in some project.
+
+Assumes you already have composer installed.  If not see [the documentation](https://packagist.org/)
 ```
 cd demo/composer
 composer install
-
 ```
 ### Use it as a docker proxy
-- This assumes you have configured an upstream mirror.  We cannot (yet) proxy registry-1.docker.io, but plan to in the future
+- This assumes you have configured an upstream mirror.  We cannot (yet) proxy registry-1.docker.io, but plan to in the future.
+
+
 Using this [configuration](./config.yml)
 ```
 # 

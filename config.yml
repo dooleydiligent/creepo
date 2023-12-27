@@ -1,3 +1,11 @@
+#proxy: 'https://some.squid.proxy:3128'
+#proxy_user: 'when required by proxy'
+#proxy_password: 'when required by proxy'
+#
+# By default we do not cache anything
+#
+#no_cache: False
+#
 port: 4443
 docker:
     registry: 'https://docker.tuscawilla.local:32000'
@@ -5,3 +13,10 @@ docker:
     credentials:
         username: 'docker'
         password: 'password'
+
+m2:
+    registry: 'https://repo.maven.apache.org/maven2'
+    # cacert: '/path/to/upstream/cacert.crt'
+    # credentials:
+        # username: 'when required by the upstream'
+        # password: 'when required by the upstream'
