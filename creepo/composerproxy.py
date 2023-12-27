@@ -14,6 +14,7 @@ import cherrypy
 
 from proxy import Proxy
 
+
 class ComposerProxy:
     """
 
@@ -55,11 +56,14 @@ class ComposerProxy:
             self.logger.debug('%s package is %s', __name__, package)
             for version in data['packages'][package]:
                 if version.get('source') is not None:
-                    version['source'][
-                        'url'] = f"{self.config[self.key]['self']}/source?q={urllib.parse.quote_plus(version['source']['url'])}"
+                    version['source']['url'] = self.config[self.key]['self'] + \
+                        '/source?q=' + \
+                        urllib.parse.quote_plus(version['source']['url'])
                 if version.get('dist') is not None:
                     version['dist'][
-                        'url'] = f"{self.config[self.key]['self']}/dist?q={urllib.parse.quote_plus(version['dist']['url'])}"
+                        'url'] = self.config[self.key]['self'] + \
+                        '/dist?q=' + \
+                        urllib.parse.quote_plus(version['dist']['url'])
 
         content = json.dumps(data)
         self.proxy.persist(bytes(content, encoding="utf-8"),

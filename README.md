@@ -45,16 +45,14 @@ python3 -m venv venv
 ```
 ### Install Creepo
 ```
-pip install --upgrade pip .
+pip install --upgrade pip poetry .
+poetry install -C creepo --no-interaction --no-root
 
 ```
 
 ### Run
-```
-export CREEPO_APP=creepo
-export CREEPO_ENV=development
 
-python creepo >creepo.log 2>&1
+python creepo 
 ```
 
 ### generate coverage report

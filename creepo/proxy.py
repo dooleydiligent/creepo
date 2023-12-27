@@ -2,7 +2,6 @@
 import errno
 import os
 from http.client import responses
-from requests.auth import HTTPBasicAuth
 
 import mime
 import urllib3
@@ -63,7 +62,7 @@ class Proxy:  # pylint: disable=too-few-public-methods
 
             ca_certs = ()
             if self.config.get('cacert') is not None:
-                ca_certs = (self.config['cacert'])
+                ca_certs = self.config['cacert']
 
             logger.debug('%s.%s ca_certs is %s for %s', self._type,
                          __name__, ca_certs, self._upstream_url)
@@ -73,7 +72,8 @@ class Proxy:  # pylint: disable=too-few-public-methods
             headers['content-type'] = content_type
             if self.config.get('credentials') is not None:
                 headers = headers | urllib3.make_headers(
-                    basic_auth=f"{self.config.get('credentials').get('username')}:{self.config.get('credentials').get('password')}"
+                    basic_auth=f"{self.config.get('credentials').get('username')}:" +
+                    "{self.config.get('credentials').get('password')}"
                 )
 
             logger.debug('%s.%s HEADERS: %s', self._type, __name__, headers)
@@ -147,5 +147,6 @@ class Proxy:  # pylint: disable=too-few-public-methods
 
             logger.debug('%s.%s Not found %s', self._type,
                          __name__, request['output_filename'])
-            start_response(f"{status} {responses[status]}", response_headers=response_headers)
+            start_response(
+                f"{status} {responses[status]}", response_headers=response_headers)
             yield []
