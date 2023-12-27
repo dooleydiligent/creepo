@@ -30,3 +30,5 @@ RUN coverage run -m pytest
 RUN coverage html --omit="*/test*"
 
 ENTRYPOINT ["python3", "creepo"]
+
+# https://stackoverflow.com/questions/18525152/git-clone-and-checkout-in-a-single-command
