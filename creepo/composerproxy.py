@@ -1,6 +1,6 @@
 """
 
-A composer proxy
+Composer - proxy https://packagist.org for use by php developers
 
 """
 import io
@@ -8,17 +8,34 @@ import json
 import urllib.parse
 from urllib.parse import urlparse
 
-import mime
-
 import cherrypy
 
-from proxy import Proxy
+from httpproxy import Proxy
 
 
 class ComposerProxy:
     """
 
-    A composer proxy
+    Default configuration: { 'registry' : 'https://packagist.org' }
+    
+    Exposed at endpoint /p2
+
+    When no_cache is not True then we will host selected 'source' and 'dist' packages
+
+    Configure a project to use Creepo by adding this to composer.json:
+
+    ```
+    "repositories": [
+    {
+        "type": "composer",
+        "url": "https://${HOST_IP}:4443/p2/"
+    },
+    {
+        "packagist.org": false
+    }
+    ],
+
+    ```
 
     """
 
@@ -30,23 +47,25 @@ class ComposerProxy:
             self.config[self.key] = {
                 'registry': 'https://packagist.org', 'self': 'https://localhost:4443/p2'}
 
-        self.proxy = Proxy(__name__, self.config[self.key])
+        self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('ComposerProxy instantiated with %s',
                           self.config[self.key])
 
-    def noopcallback(self, _input_bytes, _outpath):
+    def noopcallback(self, _input_bytes, request):
         """
-
-        noopcallback
-
+        When ComposerProxy retrieves source and dist packages on behalf of a client,
+        these will be persisted if no_cache is not True.
         """
-        self.logger.debug('%s noopcallback for %s', __name__, _outpath)
-        self.proxy.persist(_input_bytes, _outpath, self.logger)
+        self.logger.debug('%s noopcallback for %s', __name__, request['output_filename'])
+        self.proxy.persist(_input_bytes, request, self.logger)
 
-    def callback(self, _input_bytes, _outpath):
+    def callback(self, _input_bytes, request):
         """
+        When ComposerProxy acts as a registry it will retrieve meta-data from the configured 
+        upstream proxy.
 
-        callback - replace source and dist urls with self-relative urls
+        If no_cache is not True then the source and dist urls of the meta-data are re-written 
+        to self-relative urls
 
         """
 
@@ -67,11 +86,15 @@ class ComposerProxy:
 
         content = json.dumps(data)
         self.proxy.persist(bytes(content, encoding="utf-8"),
-                           _outpath, self.logger)
+                           request, self.logger)
 
     @cherrypy.expose
     def p2(self, environ, start_response):
-        """Proxy a composer request."""
+        """
+        Proxy a composer request.
+        
+        Creepo exposes a WSGI-compliant server at /p2
+        """
         path = environ["REQUEST_URI"]
         if path == '/p2/packages.json':
             path = environ["REQUEST_URI"].removeprefix("/p2")
@@ -100,24 +123,19 @@ class ComposerProxy:
             else:
                 newrequest['path'] = newpath
 
-            if len(mime.Types.of(newpath.split('?')[0])) > 0:
-                newrequest['content_type'] = mime.Types.of(newpath.split('?')[0])[
-                    0].content_type
-            else:
-                newrequest['content_type'] = 'text/html'
+            dynamic_proxy = Proxy(
+                __name__, {'registry': f"{new_remote.scheme}://{new_remote.netloc}"}, self.config)
 
-            newhost = f"{new_remote.scheme}://{new_remote.netloc}"
             self.logger.info(
-                '%s Create new proxy with host %s and path %s', __name__, newhost, new_remote.path)
+                '%s Create new proxy with host %s and path %s', __name__,
+                f"{new_remote.scheme}://{new_remote.netloc}", new_remote.path)
 
-            dynamic_proxy = Proxy(__name__, {'registry': newhost})
+            newrequest['content_type'] = dynamic_proxy.mimetype(
+                newpath.split('?')[0], 'text/html')
             return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
 
-        if len(mime.Types.of(path)) > 0:
-            newrequest['content_type'] = mime.Types.of(path)[
-                0].content_type
-        else:
-            newrequest['content_type'] = 'application/octet-stream'
+        newrequest['content_type'] = self.proxy.mimetype(
+            path, 'application/octet-stream')
 
         newrequest['path'] = newpath
         newrequest['storage'] = self.key

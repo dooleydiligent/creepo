@@ -1,25 +1,36 @@
-"""The proxy"""
+"""The httpproxy"""
 import errno
 import os
 from http.client import responses
 
 import mime
 import urllib3
+from urllib3 import ProxyManager, make_headers
 
 
 class Proxy:  # pylint: disable=too-few-public-methods
-    """The proxy"""
+    """
+    The http proxy
 
-    def __init__(self, _type, config):
+    By default this class does not persist anything.
+
+    Enable persistence by setting the global configuration option no_cache = False
+    """
+
+    def __init__(self, _type, config, global_config):
         self._type = _type
         self.config = config
+        self.no_cache = True
+        if global_config.get('no_cache') is not None:
+            self.no_cache = global_config.get('no_cache') == 'True'
+
         self._upstream = config['registry']
         self._upstream_url = urllib3.util.parse_url(config['registry'])
         self._creepo = os.path.join(os.environ.get('HOME'), '.CREEPO_BASE')
 
         if os.environ.get('CREEPO_BASE') is not None:
             self._creepo = os.environ.get('CREEPO_BASE')
-        if not os.path.exists(self._creepo):
+        if not os.path.exists(self._creepo) and self.no_cache is False:
             os.makedirs(self._creepo)
 
     @property
@@ -32,30 +43,35 @@ class Proxy:  # pylint: disable=too-few-public-methods
         """The type of proxy"""
         return self._type
 
-    def persist(self, _input, output_filename, logger):
-        """Persist the (possibly changed) data"""
-        with open(output_filename, 'wb') as outfile:
-            try:
-                outfile.write(_input)
-                logger.debug('%s.%s Wrote %d byte() to %s', self._type,
-                             __name__, len(_input), output_filename)
-            except TypeError as e:
-                logger.warning(
-                    '%s.%s Caught exception %s while trying to write %d bytes to %s',
-                    self._type, __name__, e, len(
-                        _input), output_filename)
+    def mimetype(self, path, default):
+        """Return the default mimetype for the proxy"""
 
-            outfile.close()
+        if len(mime.Types.of(path)) > 0:
+            return mime.Types.of(path)[0].content_type
+        return default
+
+    def persist(self, _input, request, logger):
+        """Persist the (possibly changed) data"""
+        if not self.no_cache:
+            with open(request['output_filename'], 'wb') as outfile:
+                try:
+                    outfile.write(_input)
+                    logger.debug('%s.%s Wrote %d byte() to %s', self._type,
+                                 __name__, len(_input), request['output_filename'])
+                except TypeError as e:
+                    logger.warning(
+                        '%s.%s Caught exception %s while trying to write %d bytes to %s',
+                        self._type, __name__, e, len(
+                            _input), request['output_filename'])
+                outfile.close()
+        request['response'] = _input
 
     def proxy(self, request, callback, start_response, logger):
         """The proxy method"""
         request['output_filename'] = f"{self._creepo}/{request['storage']}{request['path']}"
         status = 200
         response_headers = None
-        content_type = request['content_type']
-        if content_type is None and len(mime.Types.of(request['path'])) > 0:
-            content_type = mime.Types.of(request['path'])[0].content_type
-
+        content_type = self.mimetype(request['path'], request['content_type'])
         if not os.path.exists(request['output_filename']):
             logger.debug('%s.%s Requesting [%s] from [%s]',
                          self._type, __name__, request['path'], self._upstream_url)
@@ -66,14 +82,24 @@ class Proxy:  # pylint: disable=too-few-public-methods
 
             logger.debug('%s.%s ca_certs is %s for %s', self._type,
                          __name__, ca_certs, self._upstream_url)
+
             http = urllib3.PoolManager(ca_certs=ca_certs, num_pools=10)
+
+            if self.config.get('proxy') is not None:
+                default_headers = make_headers()
+                if self.config.get('proxy_user') is not None:
+                    default_headers = make_headers(
+                        proxy_basic_auth=self.config['proxy_user'] +
+                        ':' + self.config['proxy_password'])
+                http = ProxyManager(self.config.get(
+                    'proxy'), proxy_headers=default_headers)
 
             headers = request['headers']
             headers['content-type'] = content_type
             if self.config.get('credentials') is not None:
                 headers = headers | urllib3.make_headers(
-                    basic_auth=f"{self.config.get('credentials').get('username')}:" +
-                    "{self.config.get('credentials').get('password')}"
+                    basic_auth=self.config.get('credentials').get('username') + ':' +
+                    self.config.get('credentials').get('password')
                 )
 
             logger.debug('%s.%s HEADERS: %s', self._type, __name__, headers)
@@ -87,7 +113,7 @@ class Proxy:  # pylint: disable=too-few-public-methods
             logger.info('%s.%s file_path is %s',
                         self._type, __name__, file_path)
             if file_path:
-                if not os.path.exists(file_path):
+                if not os.path.exists(file_path) and self.no_cache is False:
                     logger.debug('%s.%s Creating folder(s) %s',
                                  self._type, __name__, file_path)
                     try:
@@ -106,17 +132,33 @@ class Proxy:  # pylint: disable=too-few-public-methods
                     headers=headers,
                 ) as r:
                     status = r.status
-                    response_headers = list(r.headers.items())
+
                     logger.debug("%s.%s STATUS: %d %s", self._type,
                                  __name__, r.status, source_url)
                     logger.debug('%s.%s RESPONSE HEADERS: %s',
                                  self._type, __name__, r.headers)
                     if r.status < 400:
-                        callback(r.data, request['output_filename'])
+                        # The callback must set request['response']
+                        callback(r.data, request)
                     else:
                         logger.warning(
                             '%s.%s ***WARNING***: Unexpected status %d for %s',
                             self._type, __name__, r.status, source_url)
+                        request['response'] = r.data
+
+                    if r.headers.get('Content-Length') is not None:
+                        if r.headers.get('Content-Length') != str(len(request['response'])):
+                            logger.debug('%s.%s Remove Content-Length %s', self.type,
+                                         __name__, r.headers.get('Content-Length'))
+                            r.headers.discard('Content-Length')
+                            logger.debug(
+                                '%s.%s Add Content-Length %d',
+                                self.type,
+                                __name__,
+                                len(request['response']))
+
+                    response_headers = list(r.headers.items())
+
                     r.release_conn()
             else:
                 logger.warning(
@@ -145,8 +187,14 @@ class Proxy:  # pylint: disable=too-few-public-methods
             if response_headers is None:
                 response_headers = [('Content-Type',  'text/html')]
 
-            logger.debug('%s.%s Not found %s', self._type,
-                         __name__, request['output_filename'])
-            start_response(
-                f"{status} {responses[status]}", response_headers=response_headers)
-            yield []
+            if request.get('response') is not None:
+                start_response(
+                    f"{status} {responses[status]}", response_headers)
+                yield request['response']
+            else:
+                status = 404
+                logger.debug('%s.%s Not found %s', self._type,
+                             __name__, request['output_filename'])
+                start_response(
+                    f"{status} {responses[status]}", response_headers)
+                yield []

@@ -3,7 +3,7 @@ import mime
 
 import cherrypy
 
-from proxy import Proxy
+from httpproxy import Proxy
 
 
 class DockerProxy:
@@ -17,14 +17,14 @@ class DockerProxy:
             self.config[self.key] = {
                 'registry': 'https://registry-1.docker.io'}
 
-        self.proxy = Proxy(__name__, self.config[self.key])
+        self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('DockerProxy instantiated with %s',
                           self.config[self.key])
 
-    def callback(self, _input_bytes, _outpath):
+    def callback(self, _input_bytes, request):
         """A callback to write the file"""
-        self.logger.debug('%s callback: %s', __name__, _outpath)
-        self.proxy.persist(_input_bytes, _outpath, self.logger)
+        self.logger.debug('%s callback: %s', __name__, request['output_filename'])
+        self.proxy.persist(_input_bytes, request, self.logger)
 
     @cherrypy.expose
     def v2(self, environ, start_response):

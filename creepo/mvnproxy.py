@@ -1,9 +1,7 @@
 """A maven proxy"""
-import mime
-
 import cherrypy
 
-from proxy import Proxy
+from httpproxy import Proxy
 
 
 class MavenProxy:
@@ -17,14 +15,15 @@ class MavenProxy:
             self.config[self.key] = {
                 'registry': 'https://repo.maven.apache.org/maven2'}
 
-        self.proxy = Proxy(__name__, self.config[self.key])
+        self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('MavenProxy instantiated with %s',
                           self.config[self.key])
 
-    def callback(self, _input_bytes, _outpath):
+    def callback(self, _input_bytes, request):
         """A callback to write the file"""
-        self.logger.debug('%s callback: %s', __name__, _outpath)
-        self.proxy.persist(_input_bytes, _outpath, self.logger)
+        self.logger.debug('%s callback: %s', __name__,
+                          request['output_filename'])
+        self.proxy.persist(_input_bytes, request, self.logger)
 
     @cherrypy.expose
     def m2(self, environ, start_response):
@@ -38,11 +37,9 @@ class MavenProxy:
             newpath = f"{newpath}?{cherrypy.request.query_string}"
 
         newrequest = {}
-        if len(mime.Types.of(path)) > 0:
-            newrequest['content_type'] = mime.Types.of(path)[
-                0].content_type
-        else:
-            newrequest['content_type'] = 'application/octet-stream'
+
+        newrequest['content_type'] = self.proxy.mimetype(
+            path, 'application/octet-stream')
         newrequest['method'] = cherrypy.request.method
         newrequest['path'] = newpath
         newrequest['headers'] = cherrypy.request.headers

@@ -4,7 +4,7 @@ import lxml.etree as ET
 
 import cherrypy
 
-from proxy import Proxy
+from httpproxy import Proxy
 
 
 class PipProxy:
@@ -18,20 +18,20 @@ class PipProxy:
             self.config[self.key] = {
                 'registry': 'https://pypi.org/simple', 'self': 'https://localhost:4443/pip'}
 
-        self.proxy = Proxy(__name__, self.config[self.key])
+        self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('PipProxy instantiated with %s',
                           self.config[self.key])
 
-    def noopcallback(self, _input_bytes, _outpath):
+    def noopcallback(self, _input_bytes, request):
         """noopcallback"""
-        self.logger.debug('%s noopcallback for %s', __name__, _outpath)
-        self.proxy.persist(_input_bytes, _outpath, self.logger)
+        self.logger.debug('%s noopcallback for %s', __name__,
+                          request['output_filename'])
+        self.proxy.persist(_input_bytes, request, self.logger)
 
-    def callback(self, _input_bytes, _outpath):
+    def callback(self, _input_bytes, request):
         """write the file to disk"""
-        content = _input_bytes
         parser = ET.XMLParser(recover=True)
-        doc = content
+        doc = _input_bytes
         tree = ET.fromstring(doc, parser=parser)
 
         if tree is not None:
@@ -45,7 +45,7 @@ class PipProxy:
                     node.set('href', newhref)
             doc = ET.tostring(tree)
 
-        self.proxy.persist(doc, _outpath, self.logger)
+        self.proxy.persist(doc, request, self.logger)
 
     @cherrypy.expose
     def pip(self, environ, start_response):
@@ -67,7 +67,7 @@ class PipProxy:
             newhost = 'https://files.pythonhosted.org'
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, path)
-            dynamic_proxy = Proxy(__name__, {'registry': newhost})
+            dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
             return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
 
         newrequest['storage'] = self.key

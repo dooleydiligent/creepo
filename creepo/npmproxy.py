@@ -9,7 +9,7 @@ import mime
 
 import cherrypy
 
-from proxy import Proxy
+from httpproxy import Proxy
 
 
 class NpmProxy:  # pylint: disable=fixme
@@ -22,16 +22,17 @@ class NpmProxy:  # pylint: disable=fixme
         if self.key not in self.config:
             self.config[self.key] = {'registry': 'https://registry.npmjs.org'}
 
-        self.proxy = Proxy(__name__, self.config[self.key])
+        self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('NpmProxy instantiated with %s',
                           self.config[self.key])
 
-    def noopcallback(self, _input_bytes, _outpath):
+    def noopcallback(self, _input_bytes, request):
         """noopcallback"""
-        self.logger.debug('%s noopcallback for %s', __name__, _outpath)
-        self.proxy.persist(_input_bytes, _outpath, self.logger)
+        self.logger.debug('%s noopcallback for %s',
+                          __name__, request)
+        self.proxy.persist(_input_bytes, request, self.logger)
 
-    def callback(self, _input_bytes, _outpath):
+    def callback(self, _input_bytes, request):
         """callback - preprocess the file before saving it"""
 
         data = json.load(io.BytesIO(_input_bytes))
@@ -60,7 +61,7 @@ class NpmProxy:  # pylint: disable=fixme
 
         content = json.dumps(data)
         self.proxy.persist(bytes(content, encoding="utf-8"),
-                           _outpath, self.logger)
+                           request, self.logger)
 
     @cherrypy.expose
     def npm(self, environ, start_response):
@@ -84,7 +85,7 @@ class NpmProxy:  # pylint: disable=fixme
             newhost = f"{new_remote.scheme}://{new_remote.netloc}"
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, new_remote.path)
-            dynamic_proxy = Proxy(__name__, {'registry': newhost})
+            dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
             return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
 
         newrequest['path'] = newpath
