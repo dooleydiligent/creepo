@@ -17,7 +17,6 @@ PROJECT_DIR = Path(Path(__file__).parent.resolve().absolute()
                    ).parent.resolve().absolute()
 
 if __name__ == '__main__':
-    # logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG)
     logging.getLogger().setLevel(logging.DEBUG)
     logger = cherrypy.log.error_log
     logger.setLevel(logging.DEBUG)

@@ -11,8 +11,10 @@ import cherrypy
 
 from proxy import Proxy
 
+
 class NpmProxy:  # pylint: disable=fixme
     """The npm proxy"""
+
     def __init__(self, config, logger):
         self.logger = logger
         self.config = config
@@ -57,7 +59,8 @@ class NpmProxy:  # pylint: disable=fixme
                     '%s Did not find dist for %s', __name__, version)
 
         content = json.dumps(data)
-        self.proxy.persist(bytes(content, encoding="utf-8"), _outpath, self.logger)
+        self.proxy.persist(bytes(content, encoding="utf-8"),
+                           _outpath, self.logger)
 
     @cherrypy.expose
     def npm(self, environ, start_response):
