@@ -3,7 +3,7 @@ import mime
 
 import cherrypy
 
-from httpproxy import Proxy
+from creepo.httpproxy import Proxy
 
 
 class DockerProxy:

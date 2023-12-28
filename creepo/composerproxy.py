@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 import cherrypy
 
-from httpproxy import Proxy
+from creepo.httpproxy import Proxy
 
 
 class ComposerProxy:
