@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>creepo package &mdash; creepo 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            creepo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">creepo package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-httpproxy">httpproxy module</a><ul>
+<li><a class="reference internal" href="#httpproxy.Proxy"><code class="docutils literal notranslate"><span class="pre">Proxy</span></code></a><ul>
+<li><a class="reference internal" href="#httpproxy.Proxy.base"><code class="docutils literal notranslate"><span class="pre">Proxy.base</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.Proxy.mimetype"><code class="docutils literal notranslate"><span class="pre">Proxy.mimetype()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.Proxy.no_cache"><code class="docutils literal notranslate"><span class="pre">Proxy.no_cache</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.Proxy.persist"><code class="docutils literal notranslate"><span class="pre">Proxy.persist()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.Proxy.proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.proxy()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.Proxy.type"><code class="docutils literal notranslate"><span class="pre">Proxy.type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-composerproxy">composerproxy module</a><ul>
+<li><a class="reference internal" href="#composerproxy.ComposerProxy"><code class="docutils literal notranslate"><span class="pre">ComposerProxy</span></code></a><ul>
+<li><a class="reference internal" href="#composerproxy.ComposerProxy.callback"><code class="docutils literal notranslate"><span class="pre">ComposerProxy.callback()</span></code></a></li>
+<li><a class="reference internal" href="#composerproxy.ComposerProxy.noopcallback"><code class="docutils literal notranslate"><span class="pre">ComposerProxy.noopcallback()</span></code></a></li>
+<li><a class="reference internal" href="#composerproxy.ComposerProxy.p2"><code class="docutils literal notranslate"><span class="pre">ComposerProxy.p2()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-dockerproxy">dockerproxy module</a><ul>
+<li><a class="reference internal" href="#dockerproxy.DockerProxy"><code class="docutils literal notranslate"><span class="pre">DockerProxy</span></code></a><ul>
+<li><a class="reference internal" href="#dockerproxy.DockerProxy.callback"><code class="docutils literal notranslate"><span class="pre">DockerProxy.callback()</span></code></a></li>
+<li><a class="reference internal" href="#dockerproxy.DockerProxy.v2"><code class="docutils literal notranslate"><span class="pre">DockerProxy.v2()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-mvnproxy">mvnproxy module</a><ul>
+<li><a class="reference internal" href="#mvnproxy.MavenProxy"><code class="docutils literal notranslate"><span class="pre">MavenProxy</span></code></a><ul>
+<li><a class="reference internal" href="#mvnproxy.MavenProxy.m2"><code class="docutils literal notranslate"><span class="pre">MavenProxy.m2()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-npmproxy">npmproxy module</a><ul>
+<li><a class="reference internal" href="#npmproxy.NpmProxy"><code class="docutils literal notranslate"><span class="pre">NpmProxy</span></code></a><ul>
+<li><a class="reference internal" href="#npmproxy.NpmProxy.callback"><code class="docutils literal notranslate"><span class="pre">NpmProxy.callback()</span></code></a></li>
+<li><a class="reference internal" href="#npmproxy.NpmProxy.noopcallback"><code class="docutils literal notranslate"><span class="pre">NpmProxy.noopcallback()</span></code></a></li>
+<li><a class="reference internal" href="#npmproxy.NpmProxy.npm"><code class="docutils literal notranslate"><span class="pre">NpmProxy.npm()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pipproxy">pipproxy module</a><ul>
+<li><a class="reference internal" href="#pipproxy.PipProxy"><code class="docutils literal notranslate"><span class="pre">PipProxy</span></code></a><ul>
+<li><a class="reference internal" href="#pipproxy.PipProxy.callback"><code class="docutils literal notranslate"><span class="pre">PipProxy.callback()</span></code></a></li>
+<li><a class="reference internal" href="#pipproxy.PipProxy.noopcallback"><code class="docutils literal notranslate"><span class="pre">PipProxy.noopcallback()</span></code></a></li>
+<li><a class="reference internal" href="#pipproxy.PipProxy.pip"><code class="docutils literal notranslate"><span class="pre">PipProxy.pip()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-creepo">Module contents</a><ul>
+<li><a class="reference internal" href="#creepo.Creepo"><code class="docutils literal notranslate"><span class="pre">Creepo</span></code></a><ul>
+<li><a class="reference internal" href="#creepo.Creepo.hello"><code class="docutils literal notranslate"><span class="pre">Creepo.hello()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">creepo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">creepo package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/creepo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="creepo-package">
+<h1>creepo package<a class="headerlink" href="#creepo-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-httpproxy">
+<span id="httpproxy-module"></span><h2>httpproxy module<a class="headerlink" href="#module-httpproxy" title="Link to this heading"></a></h2>
+<p>The httpproxy module exposes class <a class="reference internal" href="#httpproxy.Proxy" title="httpproxy.Proxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></a>, which is the base request endpoint.</p>
+<p>By default the httpproxy module expects to support secure transmission protocols.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="httpproxy.Proxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">httpproxy.</span></span><span class="sig-name descname"><span class="pre">Proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The http proxy</p>
+<p>By default this class does not persist anything.</p>
+<p>Enable persistence by setting the global configuration option <cite>no_cache</cite> = <strong>False</strong></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="httpproxy.Proxy.base">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base</span></span><a class="headerlink" href="#httpproxy.Proxy.base" title="Link to this definition"></a></dt>
+<dd><p>The base path to storage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="httpproxy.Proxy.mimetype">
+<span class="sig-name descname"><span class="pre">mimetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.mimetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.mimetype" title="Link to this definition"></a></dt>
+<dd><p>Return the default mimetype for the proxy</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="httpproxy.Proxy.no_cache">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no_cache</span></span><a class="headerlink" href="#httpproxy.Proxy.no_cache" title="Link to this definition"></a></dt>
+<dd><p>The no_cache property for this <a class="reference internal" href="#httpproxy.Proxy" title="httpproxy.Proxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="httpproxy.Proxy.persist">
+<span class="sig-name descname"><span class="pre">persist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.persist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.persist" title="Link to this definition"></a></dt>
+<dd><p>Persist the (possibly changed) data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="httpproxy.Proxy.proxy">
+<span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.proxy" title="Link to this definition"></a></dt>
+<dd><p>The proxy method is the work engine for everything, including caching, if enabled</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="httpproxy.Proxy.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#httpproxy.Proxy.type" title="Link to this definition"></a></dt>
+<dd><p>The type of proxy</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-composerproxy">
+<span id="composerproxy-module"></span><h2>composerproxy module<a class="headerlink" href="#module-composerproxy" title="Link to this heading"></a></h2>
+<p>Composer - proxy <a class="reference external" href="https://packagist.org">https://packagist.org</a> for use by php developers</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="composerproxy.ComposerProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composerproxy.</span></span><span class="sig-name descname"><span class="pre">ComposerProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/composerproxy.html#ComposerProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#composerproxy.ComposerProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<blockquote>
+<div><p>Default configuration: { ‘registry’ : ‘<a class="reference external" href="https://packagist.org">https://packagist.org</a>’ }</p>
+<p>Exposed at endpoint /p2</p>
+<p>When no_cache is not True then we will host selected ‘source’ and ‘dist’ packages</p>
+<p>Configure a project to use Creepo by adding this to composer.json:</p>
+</div></blockquote>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;repositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">     </span><span class="p">{</span>
+<span class="w">       </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://${HOST_IP}:4443/p2/&quot;</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="composerproxy.ComposerProxy.callback">
+<span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/composerproxy.html#ComposerProxy.callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#composerproxy.ComposerProxy.callback" title="Link to this definition"></a></dt>
+<dd><p>When ComposerProxy acts as a registry it will retrieve meta-data from the configured
+upstream proxy.</p>
+<p>If no_cache is not True then the source and dist urls of the meta-data are re-written
+to self-relative urls</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="composerproxy.ComposerProxy.noopcallback">
+<span class="sig-name descname"><span class="pre">noopcallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/composerproxy.html#ComposerProxy.noopcallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#composerproxy.ComposerProxy.noopcallback" title="Link to this definition"></a></dt>
+<dd><p>When ComposerProxy retrieves source and dist packages on behalf of a client,
+these will be persisted if no_cache is not True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="composerproxy.ComposerProxy.p2">
+<span class="sig-name descname"><span class="pre">p2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/composerproxy.html#ComposerProxy.p2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#composerproxy.ComposerProxy.p2" title="Link to this definition"></a></dt>
+<dd><p>Proxy a composer request.</p>
+<p>Creepo exposes a WSGI-compliant server at /p2</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-dockerproxy">
+<span id="dockerproxy-module"></span><h2>dockerproxy module<a class="headerlink" href="#module-dockerproxy" title="Link to this heading"></a></h2>
+<p>A docker proxy</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="dockerproxy.DockerProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dockerproxy.</span></span><span class="sig-name descname"><span class="pre">DockerProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dockerproxy.html#DockerProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dockerproxy.DockerProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A docker proxy</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dockerproxy.DockerProxy.callback">
+<span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dockerproxy.html#DockerProxy.callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dockerproxy.DockerProxy.callback" title="Link to this definition"></a></dt>
+<dd><p>A callback to write the file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dockerproxy.DockerProxy.v2">
+<span class="sig-name descname"><span class="pre">v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dockerproxy.html#DockerProxy.v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dockerproxy.DockerProxy.v2" title="Link to this definition"></a></dt>
+<dd><p>Proxy a docker request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-mvnproxy">
+<span id="mvnproxy-module"></span><h2>mvnproxy module<a class="headerlink" href="#module-mvnproxy" title="Link to this heading"></a></h2>
+<p>Apache maven - proxy <a class="reference external" href="https://repo.maven.apache.org/maven2">https://repo.maven.apache.org/maven2</a> for use by java, scala, gradle, and other developers</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mvnproxy.MavenProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mvnproxy.</span></span><span class="sig-name descname"><span class="pre">MavenProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mvnproxy.html#MavenProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mvnproxy.MavenProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A maven proxy</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mvnproxy.MavenProxy.m2">
+<span class="sig-name descname"><span class="pre">m2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mvnproxy.html#MavenProxy.m2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mvnproxy.MavenProxy.m2" title="Link to this definition"></a></dt>
+<dd><p>Proxy a maven request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-npmproxy">
+<span id="npmproxy-module"></span><h2>npmproxy module<a class="headerlink" href="#module-npmproxy" title="Link to this heading"></a></h2>
+<p>An npm proxy</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="npmproxy.NpmProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">npmproxy.</span></span><span class="sig-name descname"><span class="pre">NpmProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/npmproxy.html#NpmProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#npmproxy.NpmProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The npm proxy</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="npmproxy.NpmProxy.callback">
+<span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/npmproxy.html#NpmProxy.callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#npmproxy.NpmProxy.callback" title="Link to this definition"></a></dt>
+<dd><p>callback - preprocess the file before saving it</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="npmproxy.NpmProxy.noopcallback">
+<span class="sig-name descname"><span class="pre">noopcallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/npmproxy.html#NpmProxy.noopcallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#npmproxy.NpmProxy.noopcallback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="npmproxy.NpmProxy.npm">
+<span class="sig-name descname"><span class="pre">npm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/npmproxy.html#NpmProxy.npm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#npmproxy.NpmProxy.npm" title="Link to this definition"></a></dt>
+<dd><p>Proxy an npm request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pipproxy">
+<span id="pipproxy-module"></span><h2>pipproxy module<a class="headerlink" href="#module-pipproxy" title="Link to this heading"></a></h2>
+<p>The pip proxy</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipproxy.PipProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pipproxy.</span></span><span class="sig-name descname"><span class="pre">PipProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipproxy.html#PipProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipproxy.PipProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The pip proxy</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipproxy.PipProxy.callback">
+<span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipproxy.html#PipProxy.callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipproxy.PipProxy.callback" title="Link to this definition"></a></dt>
+<dd><p>write the file to disk</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipproxy.PipProxy.noopcallback">
+<span class="sig-name descname"><span class="pre">noopcallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_input_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipproxy.html#PipProxy.noopcallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipproxy.PipProxy.noopcallback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipproxy.PipProxy.pip">
+<span class="sig-name descname"><span class="pre">pip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipproxy.html#PipProxy.pip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipproxy.PipProxy.pip" title="Link to this definition"></a></dt>
+<dd><p>Proxy a pip repo request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-creepo">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-creepo" title="Link to this heading"></a></h2>
+<p>The creepo class</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="creepo.Creepo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">creepo.</span></span><span class="sig-name descname"><span class="pre">Creepo</span></span><a class="reference internal" href="_modules/creepo.html#Creepo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creepo.Creepo" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Creepo class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="creepo.Creepo.hello">
+<span class="sig-name descname"><span class="pre">hello</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/creepo.html#Creepo.hello"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creepo.Creepo.hello" title="Link to this definition"></a></dt>
+<dd><p>A simple hello method</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, lane holcombe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
