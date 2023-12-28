@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module httpproxy</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>httpproxy</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/lane/git/creepo/creepo/httpproxy.py">/home/lane/git/creepo/creepo/httpproxy.py</a></font></td></tr></table>
+    <p><tt>The&nbsp;httpproxy</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="errno.html">errno</a><br>
+</td><td width="25%" valign=top><a href="mime.html">mime</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="urllib3.html">urllib3</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="httpproxy.html#Proxy">Proxy</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Proxy">class <strong>Proxy</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Proxy">Proxy</a>(_type,&nbsp;config,&nbsp;global_config)<br>
+&nbsp;<br>
+The&nbsp;http&nbsp;proxy<br>
+&nbsp;<br>
+By&nbsp;default&nbsp;this&nbsp;class&nbsp;does&nbsp;not&nbsp;persist&nbsp;anything.<br>
+&nbsp;<br>
+Enable&nbsp;persistence&nbsp;by&nbsp;setting&nbsp;the&nbsp;global&nbsp;configuration&nbsp;option&nbsp;no_cache&nbsp;=&nbsp;False<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Proxy-__init__"><strong>__init__</strong></a>(self, _type, config, global_config)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(<a href="#Proxy-type">type</a>(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Proxy-mimetype"><strong>mimetype</strong></a>(self, path, default)</dt><dd><tt>Return&nbsp;the&nbsp;default&nbsp;mimetype&nbsp;for&nbsp;the&nbsp;proxy</tt></dd></dl>
+
+<dl><dt><a name="Proxy-persist"><strong>persist</strong></a>(self, _input, request, logger)</dt><dd><tt>Persist&nbsp;the&nbsp;(possibly&nbsp;changed)&nbsp;data</tt></dd></dl>
+
+<dl><dt><a name="Proxy-proxy"><strong>proxy</strong></a>(self, request, callback, start_response, logger)</dt><dd><tt>The&nbsp;proxy&nbsp;method</tt></dd></dl>
+
+<hr>
+Readonly properties defined here:<br>
+<dl><dt><strong>base</strong></dt>
+<dd><tt>The&nbsp;base&nbsp;path&nbsp;to&nbsp;storage</tt></dd>
+</dl>
+<dl><dt><strong>type</strong></dt>
+<dd><tt>The&nbsp;type&nbsp;of&nbsp;proxy</tt></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>responses</strong> = {&lt;HTTPStatus.CONTINUE: 100&gt;: 'Continue', &lt;HTTPStatus.SWITCHING_PROTOCOLS: 101&gt;: 'Switching Protocols', &lt;HTTPStatus.PROCESSING: 102&gt;: 'Processing', &lt;HTTPStatus.EARLY_HINTS: 103&gt;: 'Early Hints', &lt;HTTPStatus.OK: 200&gt;: 'OK', &lt;HTTPStatus.CREATED: 201&gt;: 'Created', &lt;HTTPStatus.ACCEPTED: 202&gt;: 'Accepted', &lt;HTTPStatus.NON_AUTHORITATIVE_INFORMATION: 203&gt;: 'Non-Authoritative Information', &lt;HTTPStatus.NO_CONTENT: 204&gt;: 'No Content', &lt;HTTPStatus.RESET_CONTENT: 205&gt;: 'Reset Content', ...}</td></tr></table>
+</body></html>

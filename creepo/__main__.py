@@ -9,9 +9,10 @@ import cherrypy
 
 from dockerproxy import DockerProxy
 from composerproxy import ComposerProxy
-from npmproxy import NpmProxy
 from mvnproxy import MavenProxy
 from pipproxy import PipProxy
+from npmproxy import NpmProxy
+
 # this file's parent directory
 PROJECT_DIR = Path(Path(__file__).parent.resolve().absolute()
                    ).parent.resolve().absolute()
