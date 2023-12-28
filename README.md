@@ -81,6 +81,16 @@ coverage run -m pytest
 coverage html --omit="*/test*"
 ```
 
+### Generate pydoc
+
+```
+python -m pydoc -w creepo
+mv creepo.html index.html
+python -m pydoc -w creepo/*.py
+sed -i 's,"creepo\.,",g' index.html
+mv __init__.html __main__.html
+```
+
 ### Use it as a Maven proxy
 ```
 # You must first trust the creep
