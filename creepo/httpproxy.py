@@ -1,5 +1,5 @@
 """
-The httpproxy module exposes class :class:`Proxy`, which is the base request endpoint.
+The httpproxy module exposes class `Proxy`, which is the base request endpoint.
 
 By default the httpproxy module expects to support secure transmission protocols.
 """
