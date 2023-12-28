@@ -1,12 +1,13 @@
 """
-Apache maven - proxy https://repo.maven.apache.org/maven2 for use by java, scala, gradle, and other developers
+Apache maven - proxy https://repo.maven.apache.org/maven2 for use by java, 
+scala, gradle, and similar tools
 """
 import cherrypy
 
 from httpproxy import Proxy
 
 
-class MavenProxy:
+class MavenProxy:  # pylint: disable=too-few-public-methods
     """A maven proxy"""
 
     def __init__(self, config, logger):

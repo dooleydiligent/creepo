@@ -3,7 +3,7 @@ A Creepo test suite
 """
 import cherrypy
 from cherrypy.test import helper
-import creepo.creepo
+import creepo.rest
 
 
 class SimpleCherryPyTest(helper.CPWebCase):
@@ -15,7 +15,7 @@ class SimpleCherryPyTest(helper.CPWebCase):
         """
         Setup the server
         """
-        cherrypy.tree.mount(creepo.creepo.Creepo(), '/', {})
+        cherrypy.tree.mount(creepo.rest.Creepo(), '/', {})
 
     def test_hello(self):
         """

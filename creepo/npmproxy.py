@@ -26,12 +26,6 @@ class NpmProxy:  # pylint: disable=fixme
         self.logger.debug('NpmProxy instantiated with %s',
                           self.config[self.key])
 
-    def noopcallback(self, _input_bytes, request):
-        """noopcallback"""
-        self.logger.debug('%s noopcallback for %s',
-                          __name__, request)
-        self.proxy.persist(_input_bytes, request, self.logger)
-
     def callback(self, _input_bytes, request):
         """callback - preprocess the file before saving it"""
 
@@ -58,10 +52,7 @@ class NpmProxy:  # pylint: disable=fixme
             else:
                 self.logger.warning(
                     '%s Did not find dist for %s', __name__, version)
-
-        content = json.dumps(data)
-        self.proxy.persist(bytes(content, encoding="utf-8"),
-                           request, self.logger)
+        request['response'] = bytes(json.dumps(data), 'utf-8')
 
     @cherrypy.expose
     def npm(self, environ, start_response):
@@ -86,7 +77,7 @@ class NpmProxy:  # pylint: disable=fixme
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, new_remote.path)
             dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
-            return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
+            return dynamic_proxy.proxy(newrequest, None, start_response, self.logger)
 
         newrequest['path'] = newpath
         newrequest['storage'] = 'npm'

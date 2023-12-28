@@ -7,9 +7,7 @@ import io
 import json
 import urllib.parse
 from urllib.parse import urlparse
-
 import cherrypy
-
 from httpproxy import Proxy
 
 
@@ -47,15 +45,6 @@ class ComposerProxy:
         self.logger.debug('ComposerProxy instantiated with %s',
                           self.config[self.key])
 
-    def noopcallback(self, _input_bytes, request):
-        """
-        When ComposerProxy retrieves source and dist packages on behalf of a client,
-        these will be persisted if no_cache is not True.
-        """
-        self.logger.debug('%s noopcallback for %s', __name__,
-                          request['output_filename'])
-        self.proxy.persist(_input_bytes, request, self.logger)
-
     def callback(self, _input_bytes, request):
         """
         When ComposerProxy acts as a registry it will retrieve meta-data from the configured 
@@ -81,9 +70,7 @@ class ComposerProxy:
                         '/dist?q=' + \
                         urllib.parse.quote_plus(version['dist']['url'])
 
-        content = json.dumps(data)
-        self.proxy.persist(bytes(content, encoding="utf-8"),
-                           request, self.logger)
+        request['response'] = bytes(json.dumps(data), 'utf-8')
 
     @cherrypy.expose
     def p2(self, environ, start_response):
@@ -129,7 +116,7 @@ class ComposerProxy:
 
             newrequest['content_type'] = dynamic_proxy.mimetype(
                 newpath.split('?')[0], 'text/html')
-            return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
+            return dynamic_proxy.proxy(newrequest, None, start_response, self.logger)
 
         newrequest['content_type'] = self.proxy.mimetype(
             path, 'application/octet-stream')
