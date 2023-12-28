@@ -9,7 +9,9 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>httpproxy</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/lane/git/creepo/creepo/httpproxy.py">/home/lane/git/creepo/creepo/httpproxy.py</a></font></td></tr></table>
-    <p><tt>The&nbsp;httpproxy</tt></p>
+    <p><tt>The&nbsp;httpproxy&nbsp;module&nbsp;exposes&nbsp;class&nbsp;:class:`<a href="#Proxy">Proxy</a>`,&nbsp;which&nbsp;is&nbsp;the&nbsp;base&nbsp;request&nbsp;endpoint.<br>
+&nbsp;<br>
+By&nbsp;default&nbsp;the&nbsp;httpproxy&nbsp;module&nbsp;expects&nbsp;to&nbsp;support&nbsp;secure&nbsp;transmission&nbsp;protocols.</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -49,21 +51,24 @@ The&nbsp;http&nbsp;proxy<br>
 &nbsp;<br>
 By&nbsp;default&nbsp;this&nbsp;class&nbsp;does&nbsp;not&nbsp;persist&nbsp;anything.<br>
 &nbsp;<br>
-Enable&nbsp;persistence&nbsp;by&nbsp;setting&nbsp;the&nbsp;global&nbsp;configuration&nbsp;option&nbsp;no_cache&nbsp;=&nbsp;False<br>&nbsp;</tt></td></tr>
+Enable&nbsp;persistence&nbsp;by&nbsp;setting&nbsp;the&nbsp;global&nbsp;configuration&nbsp;option&nbsp;`no_cache`&nbsp;=&nbsp;**False**<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Proxy-__init__"><strong>__init__</strong></a>(self, _type, config, global_config)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(<a href="#Proxy-type">type</a>(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
 <dl><dt><a name="Proxy-mimetype"><strong>mimetype</strong></a>(self, path, default)</dt><dd><tt>Return&nbsp;the&nbsp;default&nbsp;mimetype&nbsp;for&nbsp;the&nbsp;proxy</tt></dd></dl>
 
-<dl><dt><a name="Proxy-persist"><strong>persist</strong></a>(self, _input, request, logger)</dt><dd><tt>Persist&nbsp;the&nbsp;(possibly&nbsp;changed)&nbsp;data</tt></dd></dl>
+<dl><dt><a name="Proxy-persist"><strong>persist</strong></a>(self, request, logger)</dt><dd><tt>Persist&nbsp;the&nbsp;(possibly&nbsp;changed)&nbsp;data</tt></dd></dl>
 
-<dl><dt><a name="Proxy-proxy"><strong>proxy</strong></a>(self, request, callback, start_response, logger)</dt><dd><tt>The&nbsp;proxy&nbsp;method</tt></dd></dl>
+<dl><dt><a name="Proxy-proxy"><strong>proxy</strong></a>(self, request, callback, start_response, logger)</dt><dd><tt>The&nbsp;proxy&nbsp;method&nbsp;is&nbsp;the&nbsp;work&nbsp;engine&nbsp;for&nbsp;everything,&nbsp;including&nbsp;caching,&nbsp;if&nbsp;enabled</tt></dd></dl>
 
 <hr>
 Readonly properties defined here:<br>
 <dl><dt><strong>base</strong></dt>
 <dd><tt>The&nbsp;base&nbsp;path&nbsp;to&nbsp;storage</tt></dd>
+</dl>
+<dl><dt><strong>no_cache</strong></dt>
+<dd><tt>The&nbsp;no_cache&nbsp;property&nbsp;for&nbsp;this&nbsp;:class:`Proxy`</tt></dd>
 </dl>
 <dl><dt><strong>type</strong></dt>
 <dd><tt>The&nbsp;type&nbsp;of&nbsp;proxy</tt></dd>
