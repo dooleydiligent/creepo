@@ -1,4 +1,8 @@
-"""The httpproxy"""
+"""
+The httpproxy module exposes class :class:`Proxy`, which is the base request endpoint.
+
+By default the httpproxy module expects to support secure transmission protocols.
+"""
 import errno
 import os
 from http.client import responses
@@ -8,22 +12,22 @@ import urllib3
 from urllib3 import ProxyManager, make_headers
 
 
-class Proxy:  # pylint: disable=too-few-public-methods
+class Proxy:
     """
     The http proxy
 
     By default this class does not persist anything.
 
-    Enable persistence by setting the global configuration option no_cache = False
+    Enable persistence by setting the global configuration option `no_cache` = **False**
     """
 
     def __init__(self, _type, config, global_config):
         self._type = _type
         self.config = config
-        self.no_cache = True
+        no_cache = True
         if global_config.get('no_cache') is not None:
-            self.no_cache = global_config.get('no_cache') == 'True'
-
+            no_cache = global_config.get('no_cache') == 'True'
+        self._no_cache = no_cache
         self._upstream = config['registry']
         self._upstream_url = urllib3.util.parse_url(config['registry'])
         self._creepo = os.path.join(os.environ.get('HOME'), '.CREEPO_BASE')
@@ -43,6 +47,11 @@ class Proxy:  # pylint: disable=too-few-public-methods
         """The type of proxy"""
         return self._type
 
+    @property
+    def no_cache(self):
+        """The no_cache property for this :class:`Proxy`"""
+        return self._no_cache
+
     def mimetype(self, path, default):
         """Return the default mimetype for the proxy"""
 
@@ -50,24 +59,22 @@ class Proxy:  # pylint: disable=too-few-public-methods
             return mime.Types.of(path)[0].content_type
         return default
 
-    def persist(self, _input, request, logger):
+    def persist(self, request, logger):
         """Persist the (possibly changed) data"""
-        if not self.no_cache:
-            with open(request['output_filename'], 'wb') as outfile:
-                try:
-                    outfile.write(_input)
-                    logger.debug('%s.%s Wrote %d byte() to %s', self._type,
-                                 __name__, len(_input), request['output_filename'])
-                except TypeError as e:
-                    logger.warning(
-                        '%s.%s Caught exception %s while trying to write %d bytes to %s',
-                        self._type, __name__, e, len(
-                            _input), request['output_filename'])
-                outfile.close()
-        request['response'] = _input
+        with open(request['output_filename'], 'wb') as outfile:
+            try:
+                outfile.write(request['response'])
+                logger.debug('%s.%s Wrote %d byte() to %s', self._type,
+                             __name__, len(request['response']), request['output_filename'])
+            except TypeError as e:
+                logger.warning(
+                    '%s.%s Caught exception %s while trying to write %d bytes to %s',
+                    self._type, __name__, e, len(
+                        request['response']), request['output_filename'])
+            outfile.close()
 
     def proxy(self, request, callback, start_response, logger):
-        """The proxy method"""
+        """The proxy method is the work engine for everything, including caching, if enabled"""
         request['output_filename'] = f"{self._creepo}/{request['storage']}{request['path']}"
         status = 200
         response_headers = None
@@ -138,8 +145,11 @@ class Proxy:  # pylint: disable=too-few-public-methods
                     logger.debug('%s.%s RESPONSE HEADERS: %s',
                                  self._type, __name__, r.headers)
                     if r.status < 400:
-                        # The callback must set request['response']
-                        callback(r.data, request)
+                        if callback is not None:
+                            # The callback must set request['response']
+                            callback(r.data, request)
+                        else:
+                            request['response'] = r.data
                     else:
                         logger.warning(
                             '%s.%s ***WARNING***: Unexpected status %d for %s',
@@ -191,6 +201,8 @@ class Proxy:  # pylint: disable=too-few-public-methods
                 start_response(
                     f"{status} {responses[status]}", response_headers)
                 yield request['response']
+                if not self.no_cache:
+                    self.persist(request['response'], request, logger)
             else:
                 status = 404
                 logger.debug('%s.%s Not found %s', self._type,

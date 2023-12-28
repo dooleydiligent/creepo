@@ -10,33 +10,29 @@ from urllib.parse import urlparse
 
 import cherrypy
 
-from creepo.httpproxy import Proxy
+from httpproxy import Proxy
 
 
 class ComposerProxy:
     """
-
     Default configuration: { 'registry' : 'https://packagist.org' }
-    
+
     Exposed at endpoint /p2
 
     When no_cache is not True then we will host selected 'source' and 'dist' packages
 
     Configure a project to use Creepo by adding this to composer.json:
 
-    ```
-    "repositories": [
-    {
-        "type": "composer",
-        "url": "https://${HOST_IP}:4443/p2/"
-    },
-    {
-        "packagist.org": false
-    }
-    ],
+.. code-block:: json
 
-    ```
-
+     {
+       "repositories": [
+          {
+            "type": "composer",
+            "url": "https://${HOST_IP}:4443/p2/"
+          }
+       ],
+     }
     """
 
     def __init__(self, config, logger):
@@ -56,7 +52,8 @@ class ComposerProxy:
         When ComposerProxy retrieves source and dist packages on behalf of a client,
         these will be persisted if no_cache is not True.
         """
-        self.logger.debug('%s noopcallback for %s', __name__, request['output_filename'])
+        self.logger.debug('%s noopcallback for %s', __name__,
+                          request['output_filename'])
         self.proxy.persist(_input_bytes, request, self.logger)
 
     def callback(self, _input_bytes, request):
@@ -92,7 +89,7 @@ class ComposerProxy:
     def p2(self, environ, start_response):
         """
         Proxy a composer request.
-        
+
         Creepo exposes a WSGI-compliant server at /p2
         """
         path = environ["REQUEST_URI"]

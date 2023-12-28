@@ -13,7 +13,7 @@ By default, Creepo doesn't actually cache anything.  That would be creepy.  And 
 
 Instead, Creepo is intended to be configured with a global proxy to act as a sort of gateway to various artifact repositories, either inside or outside of the local network.
 
-- Use Creepo behind a corporate firewall to proxy well used upstream repositories, such as npm, pip, maven, composer, and docker.
+- Use Creepo behind a corporate firewall to proxy well used upstream repositories, such as npm, pip, maven, composer, and docker.  This allows you to shape network traffic efficiently.
 
 - Use Creepo to take a "snapshot" of build dependencies for later analysis, such as license query or vulnerability scans.
 
@@ -24,7 +24,7 @@ Instead, Creepo is intended to be configured with a global proxy to act as a sor
 ### Clone the repository
 
 - [Visit the repository](https://github.com/dooleydiligent/creepo)
-- [PyDoc](https://dooleydiligent.github.io/creepo/pydoc.html) **(needs work)**
+- [PyDoc](https://dooleydiligent.github.io/creepo/docs/_build/html/creepo.html) **(needs work)**
 - [Unit Test Coverage](https://dooleydiligent.github.io/creepo/htmlcov/index.html) 
 
 ```

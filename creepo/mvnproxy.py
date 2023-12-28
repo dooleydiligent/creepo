@@ -1,4 +1,6 @@
-"""A maven proxy"""
+"""
+Apache maven - proxy https://repo.maven.apache.org/maven2 for use by java, scala, gradle, and other developers
+"""
 import cherrypy
 
 from httpproxy import Proxy
@@ -18,12 +20,6 @@ class MavenProxy:
         self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('MavenProxy instantiated with %s',
                           self.config[self.key])
-
-    def callback(self, _input_bytes, request):
-        """A callback to write the file"""
-        self.logger.debug('%s callback: %s', __name__,
-                          request['output_filename'])
-        self.proxy.persist(_input_bytes, request, self.logger)
 
     @cherrypy.expose
     def m2(self, environ, start_response):
@@ -46,4 +42,4 @@ class MavenProxy:
         newrequest['storage'] = 'maven'
         newrequest['actual_request'] = cherrypy.request
 
-        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
+        return self.proxy.proxy(newrequest, None, start_response, self.logger)
