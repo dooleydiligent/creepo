@@ -18,6 +18,8 @@ pyyaml = "^6.0.1"
 requests = "^2.31.0"
 routes = "^2.5.1"
 pyopenssl = "^23.3.0"
+sphinx = "^7.2.6"
+sphinx-rtd-theme = "^2.0.0"
 
 [tool.coverage.run]
 omit = [
