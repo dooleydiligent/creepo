@@ -24,7 +24,7 @@ Instead, Creepo is intended to be configured with a global proxy to act as a sor
 ### Clone the repository
 
 - [Visit the repository](https://github.com/dooleydiligent/creepo)
-- [PyDoc](https://dooleydiligent.github.io/creepo/index.html) **(needs work)**
+- [PyDoc](https://dooleydiligent.github.io/creepo/pydoc.html) **(needs work)**
 - [Unit Test Coverage](https://dooleydiligent.github.io/creepo/htmlcov/index.html) 
 
 ```
@@ -85,9 +85,9 @@ coverage html --omit="*/test*"
 
 ```
 python -m pydoc -w creepo
-mv creepo.html index.html
+mv creepo.html pydoc.html
 python -m pydoc -w creepo/*.py
-sed -i 's,"creepo\.,",g' index.html
+sed -i 's,"creepo\.,",g' pydoc.html
 mv __init__.html __main__.html
 ```
 
