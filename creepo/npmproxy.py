@@ -77,7 +77,7 @@ class NpmProxy:  # pylint: disable=fixme
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, new_remote.path)
             dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
-            return dynamic_proxy.proxy(newrequest, None, start_response, self.logger)
+            return dynamic_proxy.proxy(newrequest, start_response)
 
         newrequest['path'] = newpath
         newrequest['storage'] = 'npm'
@@ -85,4 +85,4 @@ class NpmProxy:  # pylint: disable=fixme
         self.logger.info('%s Requesting file %s', __name__, newpath)
         newrequest['logger'] = self.logger
         newrequest['callback'] = self.callback
-        return self.proxy.proxy(newrequest, start_response, self.logger)
+        return self.proxy.proxy(newrequest, start_response)

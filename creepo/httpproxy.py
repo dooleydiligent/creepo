@@ -6,6 +6,7 @@ By default the httpproxy module expects to support secure transmission protocols
 import errno
 import os
 from http.client import responses
+
 from diskcache import Cache
 import mime
 import urllib3
@@ -66,13 +67,16 @@ class Proxy:
 
     def proxy(self, environ, start_response):
         """The proxy method is the work engine for everything, including caching, if enabled"""
-        environ['output_filename'] = f"{self._creepo}/{environ['storage']}{environ['path']}"
         logger = environ['logger']
+
+        environ['output_filename'] = f"{environ['storage']}{environ['path']}"
+
         callback = environ.get('callback')
         status = 200
         response_headers = None
         content_type = self.mimetype(environ['path'], environ['content_type'])
 
+        logger.debug(f"Searching for {environ['output_filename']}")
         if Cache(self.base).get(environ['output_filename']) is None:
             logger.debug('%s.%s Requesting [%s] from [%s]',
                          self._kind, __name__, environ['path'], self._upstream_url)
@@ -126,49 +130,49 @@ class Proxy:
                              environ['method'], environ['path'])
                 if environ['path'].endswith('/'):
                     environ['output_filename'] = environ['output_filename'] + '.index'
-                with http.request(
-                    'GET',
-                    source_url,
+                r = http.request(
+                    method='GET',
+                    url=source_url,
                     decode_content=False,
                     preload_content=False,
                     headers=headers,
-                ) as r:
-                    status = r.status
+                )
+                status = r.status
+                logger.debug("%s.%s STATUS: %d %s", self._kind,
+                             __name__, status, source_url)
+                logger.debug('%s.%s RESPONSE HEADERS: %s',
+                             self._kind, __name__, r.headers)
+                if status < 400:
+                    if callback is not None:
+                        # The callback must set request['response']
+                        callback(r.data, environ)
 
-                    logger.debug("%s.%s STATUS: %d %s", self._kind,
-                                 __name__, r.status, source_url)
-                    logger.debug('%s.%s RESPONSE HEADERS: %s',
-                                 self._kind, __name__, r.headers)
-                    if r.status < 400:
-                        if callback is not None:
-                            # The callback must set request['response']
-                            callback(r.data, environ)
-
-                            r.headers.discard('Content-Length')
-                            response_headers = list(r.headers.items())
-                            start_response(
-                                f"{r.status} {responses[r.status]}",
-                                response_headers)(environ['response'])
-                        else:
-                            start_response(
-                                f"{r.status} {responses[r.status]}", list(r.headers.items()))
-                            yield r.data
-                            environ['response'] = r.data
-                    else:
-                        logger.warning(
-                            '%s.%s ***WARNING***: Unexpected status %d for %s',
-                            self._kind, __name__, r.status, source_url)
+                        r.headers.discard('Content-Length')
+                        response_headers = list(r.headers.items())
                         start_response(
-                            f"{r.status} {responses[r.status]}", list(r.headers.items()))
+                            f"{status} {responses[status]}",
+                            response_headers)(environ['response'])
+                    else:
+                        start_response(
+                            f"{status} {responses[status]}", list(r.headers.items()))
                         yield r.data
+                        environ['response'] = r.data
+                else:
+                    logger.warning(
+                        '%s.%s ***WARNING***: Unexpected status %d for %s',
+                        self._kind, __name__, status, source_url)
+                    start_response(
+                        f"{status} {responses[status]}", list(r.headers.items()))
+                    yield r.data
 
-                    r.release_conn()
-                    if not self.no_cache and environ['response'] is not None:
-                        self.persist(environ)
+                r.release_conn()
+                if not self.no_cache and environ['response'] is not None:
+                    self.persist(environ)
             else:
                 logger.warning(
                     '%s.%s WARNING: There is no file_path for %s', self._kind, __name__, source_url)
         else:
+
             if response_headers is None:
                 response_headers = [('Content-Type',  content_type)]
 
@@ -176,4 +180,5 @@ class Proxy:
                          __name__, environ['output_filename'])
             start_response(f"{status} {responses[status]}", response_headers)
             with Cache(self.base) as cache:
-                yield cache.get(environ['output_filename'])
+                result = cache.get(environ['output_filename'])
+                yield result

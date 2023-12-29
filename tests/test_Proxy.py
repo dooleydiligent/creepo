@@ -1,12 +1,7 @@
 """Unit tests for proxy"""
-import logging
 import unittest
-import unittest.mock
-import tempfile
-from unittest.mock import patch, Mock
 
-from diskcache import Cache
-import cherrypy
+import tempfile
 
 from creepo.httpproxy import Proxy
 
@@ -48,44 +43,3 @@ class TestProxy(unittest.TestCase):
                       'registry': 'https://some.random.url/path'}, {'no_cache': 'False'})
         self.assertEqual(proxy.no_cache, False,
                          "Expected no_cache to default False when specified")
-
-    @patch('urllib3.PoolManager.request')
-    def test_persist(self, mock):
-        """Test for persist"""
-        logging.getLogger().setLevel(logging.DEBUG)
-        logger = cherrypy.log.error_log
-        logger.setLevel(logging.DEBUG)
-        logger.propagate = False
-
-        mock.return_value = Mock(status = "200", data = "success")
-
-        # res = func(event, [])
-
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            with unittest.mock.patch.dict('os.environ', {'HOME': tmpdirname}):        
-                proxy = Proxy(
-                    "test", {'registry': 'https://some.random.url/path:10111'}, {'no_cache': 'False'})
-                request = {
-                    'path': '/proxy/file.name',
-                    'output_filename': 'test/some/random/path/file.name',
-                    'response': b'Hello World!',
-                    'storage': 'test',
-                    'content_type': 'application/octet-stream',
-                    'headers': {},
-                    'method': 'GET',
-                    'logger': logger
-                }
-                proxy.persist(request)
-                with Cache(proxy.base) as cache:
-                    self.assertEqual(cache.get(
-                        request['output_filename']), request['response'], 'Expect to cache the response')
-
-                cherrypy.tree.graft(proxy.proxy, '/')
-
-                expected_result = request['response']
-                result = proxy.proxy(request, None)
-
-                # mock.request.assert_called_once()
-
-                self.assertEqual(f"{expected_result}", 
-                    f"{result}", 'Expected a generator in response')

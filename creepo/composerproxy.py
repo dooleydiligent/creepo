@@ -96,7 +96,7 @@ class ComposerProxy:
         newrequest['headers'] = {}
         newrequest['actual_request'] = cherrypy.request
         newrequest['logger'] = self.logger
-        
+
         if len(newpath.split('?q=')) > 1:
             new_remote = urlparse(
                 urllib.parse.unquote_plus(newpath.split('?q=')[1]))
@@ -117,7 +117,7 @@ class ComposerProxy:
 
             newrequest['content_type'] = dynamic_proxy.mimetype(
                 newpath.split('?')[0], 'text/html')
-            return dynamic_proxy.proxy(newrequest, None, start_response, self.logger)
+            return dynamic_proxy.proxy(newrequest, start_response)
 
         newrequest['content_type'] = self.proxy.mimetype(
             path, 'application/octet-stream')

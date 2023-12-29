@@ -1,14 +1,14 @@
 #!/bin/bash
 
 
-coverage run -m pytest
+coverage run -m pytest 
 coverage html --omit="*/test*"
 
-# python -m pydoc -w creepo
-# mv creepo.html pydoc.html
-# python -m pydoc -w creepo/*.py
-# sed -i 's,"creepo\.,",g' pydoc.html
-# mv __init__.html __main__.html
+python -m pydoc -w creepo
+mv creepo.html pydoc.html
+python -m pydoc -w creepo/*.py
+sed -i 's,"creepo\.,",g' pydoc.html
+mv __init__.html __main__.html
 
 
-# pylint .
+pylint .

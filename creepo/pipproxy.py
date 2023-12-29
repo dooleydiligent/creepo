@@ -62,7 +62,7 @@ class PipProxy:
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, path)
             dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
-            return dynamic_proxy.proxy(newrequest, None, start_response, self.logger)
+            return dynamic_proxy.proxy(newrequest, start_response)
 
         newrequest['storage'] = self.key
         newrequest['logger'] = self.logger
