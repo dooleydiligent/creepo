@@ -65,5 +65,6 @@ class PipProxy:
             return dynamic_proxy.proxy(newrequest, None, start_response, self.logger)
 
         newrequest['storage'] = self.key
-
-        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
+        newrequest['logger'] = self.logger
+        newrequest['callback'] = self.callback
+        return self.proxy.proxy(newrequest, start_response)

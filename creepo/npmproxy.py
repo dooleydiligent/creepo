@@ -83,4 +83,6 @@ class NpmProxy:  # pylint: disable=fixme
         newrequest['storage'] = 'npm'
         newrequest['content_type'] = 'application/octet-stream'
         self.logger.info('%s Requesting file %s', __name__, newpath)
-        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
+        newrequest['logger'] = self.logger
+        newrequest['callback'] = self.callback
+        return self.proxy.proxy(newrequest, start_response, self.logger)

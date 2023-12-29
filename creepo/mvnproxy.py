@@ -42,5 +42,6 @@ class MavenProxy:  # pylint: disable=too-few-public-methods
         newrequest['headers'] = cherrypy.request.headers
         newrequest['storage'] = 'maven'
         newrequest['actual_request'] = cherrypy.request
+        newrequest['logger'] = self.logger
 
-        return self.proxy.proxy(newrequest, None, start_response, self.logger)
+        return self.proxy.proxy(newrequest, start_response)

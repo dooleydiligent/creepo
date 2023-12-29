@@ -95,7 +95,8 @@ class ComposerProxy:
         newrequest['method'] = cherrypy.request.method
         newrequest['headers'] = {}
         newrequest['actual_request'] = cherrypy.request
-
+        newrequest['logger'] = self.logger
+        
         if len(newpath.split('?q=')) > 1:
             new_remote = urlparse(
                 urllib.parse.unquote_plus(newpath.split('?q=')[1]))
@@ -123,5 +124,5 @@ class ComposerProxy:
 
         newrequest['path'] = newpath
         newrequest['storage'] = self.key
-
-        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
+        newrequest['callback'] = self.callback
+        return self.proxy.proxy(newrequest, start_response)

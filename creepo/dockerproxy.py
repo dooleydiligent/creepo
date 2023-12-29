@@ -52,4 +52,5 @@ class DockerProxy:  # pylint: disable=too-few-public-methods
         newrequest['storage'] = self.key
         newrequest['actual_request'] = cherrypy.request
         self.logger.debug('%s %s', __name__, newrequest)
-        return self.proxy.proxy(newrequest, None, start_response, self.logger)
+        newrequest['logger'] = self.logger
+        return self.proxy.proxy(newrequest, start_response)

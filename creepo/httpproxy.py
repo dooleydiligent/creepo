@@ -64,16 +64,18 @@ class Proxy:
             with Cache(self.base) as cache:
                 cache.set(request['output_filename'], request['response'])
 
-    def proxy(self, request, callback, start_response, logger):
+    def proxy(self, environ, start_response):
         """The proxy method is the work engine for everything, including caching, if enabled"""
-        request['output_filename'] = f"{self._creepo}/{request['storage']}{request['path']}"
+        environ['output_filename'] = f"{self._creepo}/{environ['storage']}{environ['path']}"
+        logger = environ['logger']
+        callback = environ.get('callback')
         status = 200
         response_headers = None
-        content_type = self.mimetype(request['path'], request['content_type'])
+        content_type = self.mimetype(environ['path'], environ['content_type'])
 
-        if Cache(self.base).get(request['output_filename']) is None:
+        if Cache(self.base).get(environ['output_filename']) is None:
             logger.debug('%s.%s Requesting [%s] from [%s]',
-                         self._kind, __name__, request['path'], self._upstream_url)
+                         self._kind, __name__, environ['path'], self._upstream_url)
 
             ca_certs = ()
             if self.config.get('cacert') is not None:
@@ -93,7 +95,7 @@ class Proxy:
                 http = ProxyManager(self.config.get(
                     'proxy'), proxy_headers=default_headers, num_pools=10000)
 
-            headers = request['headers']
+            headers = environ['headers']
             headers['content-type'] = content_type
             if self.config.get('credentials') is not None:
                 headers = headers | urllib3.make_headers(
@@ -102,9 +104,9 @@ class Proxy:
                 )
 
             logger.debug('%s.%s HEADERS: %s', self._kind, __name__, headers)
-            source_url = f"{self._upstream}{request['path']}"
+            source_url = f"{self._upstream}{environ['path']}"
 
-            splitpath = request['output_filename'].split('/')
+            splitpath = environ['output_filename'].split('/')
             if not source_url.endswith('/'):
                 # Remove the filename
                 splitpath.pop()
@@ -121,9 +123,9 @@ class Proxy:
                         if e.errno != errno.EEXIST:
                             raise
                 logger.debug('%s.%s %s %s', self._kind, __name__,
-                             request['method'], request['path'])
-                if request['path'].endswith('/'):
-                    request['output_filename'] = request['output_filename'] + '.index'
+                             environ['method'], environ['path'])
+                if environ['path'].endswith('/'):
+                    environ['output_filename'] = environ['output_filename'] + '.index'
                 with http.request(
                     'GET',
                     source_url,
@@ -140,18 +142,18 @@ class Proxy:
                     if r.status < 400:
                         if callback is not None:
                             # The callback must set request['response']
-                            callback(r.data, request)
+                            callback(r.data, environ)
 
                             r.headers.discard('Content-Length')
                             response_headers = list(r.headers.items())
                             start_response(
                                 f"{r.status} {responses[r.status]}",
-                                response_headers)(request['response'])
+                                response_headers)(environ['response'])
                         else:
                             start_response(
                                 f"{r.status} {responses[r.status]}", list(r.headers.items()))
                             yield r.data
-                            request['response'] = r.data
+                            environ['response'] = r.data
                     else:
                         logger.warning(
                             '%s.%s ***WARNING***: Unexpected status %d for %s',
@@ -161,8 +163,8 @@ class Proxy:
                         yield r.data
 
                     r.release_conn()
-                    if not self.no_cache and request['response'] is not None:
-                        self.persist(request)
+                    if not self.no_cache and environ['response'] is not None:
+                        self.persist(environ)
             else:
                 logger.warning(
                     '%s.%s WARNING: There is no file_path for %s', self._kind, __name__, source_url)
@@ -171,7 +173,7 @@ class Proxy:
                 response_headers = [('Content-Type',  content_type)]
 
             logger.debug('%s.%s %s is cached', self._kind,
-                         __name__, request['output_filename'])
+                         __name__, environ['output_filename'])
             start_response(f"{status} {responses[status]}", response_headers)
             with Cache(self.base) as cache:
-                yield cache.get(request['output_filename'])
+                yield cache.get(environ['output_filename'])
