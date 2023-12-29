@@ -5,8 +5,7 @@ import cherrypy
 
 from httpproxy import Proxy
 
-
-class DockerProxy:
+class DockerProxy:  # pylint: disable=too-few-public-methods
     """A docker proxy"""
 
     def __init__(self, config, logger):
@@ -20,11 +19,6 @@ class DockerProxy:
         self.proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('DockerProxy instantiated with %s',
                           self.config[self.key])
-
-    def callback(self, _input_bytes, request):
-        """A callback to write the file"""
-        self.logger.debug('%s callback: %s', __name__, request['output_filename'])
-        self.proxy.persist(_input_bytes, request, self.logger)
 
     @cherrypy.expose
     def v2(self, environ, start_response):
@@ -58,4 +52,5 @@ class DockerProxy:
         newrequest['storage'] = self.key
         newrequest['actual_request'] = cherrypy.request
         self.logger.debug('%s %s', __name__, newrequest)
-        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
+        newrequest['logger'] = self.logger
+        return self.proxy.proxy(newrequest, start_response)

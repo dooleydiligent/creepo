@@ -22,12 +22,6 @@ class PipProxy:
         self.logger.debug('PipProxy instantiated with %s',
                           self.config[self.key])
 
-    def noopcallback(self, _input_bytes, request):
-        """noopcallback"""
-        self.logger.debug('%s noopcallback for %s', __name__,
-                          request['output_filename'])
-        self.proxy.persist(_input_bytes, request, self.logger)
-
     def callback(self, _input_bytes, request):
         """write the file to disk"""
         parser = ET.XMLParser(recover=True)
@@ -45,7 +39,7 @@ class PipProxy:
                     node.set('href', newhref)
             doc = ET.tostring(tree)
 
-        self.proxy.persist(doc, request, self.logger)
+        request['response'] = doc
 
     @cherrypy.expose
     def pip(self, environ, start_response):
@@ -68,8 +62,9 @@ class PipProxy:
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, path)
             dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
-            return dynamic_proxy.proxy(newrequest, self.noopcallback, start_response, self.logger)
+            return dynamic_proxy.proxy(newrequest, start_response)
 
         newrequest['storage'] = self.key
-
-        return self.proxy.proxy(newrequest, self.callback, start_response, self.logger)
+        newrequest['logger'] = self.logger
+        newrequest['callback'] = self.callback
+        return self.proxy.proxy(newrequest, start_response)
