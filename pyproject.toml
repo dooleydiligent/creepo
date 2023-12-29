@@ -30,6 +30,7 @@ omit = [
 [tool.poetry.group.dev.dependencies]
 mime = "^0.1.0"
 tox = "^2.5"
+diskcache = "^5.6.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -43,10 +44,11 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
   "cherrypy",
-  "pytest",
-  "pytest-cov",
   "coverage",
+  "diskcache",
   "mime",
+  "pytest",
+  "pytest-cov"
 ]
 
 [project.urls]
@@ -56,4 +58,3 @@ Issues = "https://github.com/dooleydiligent/creepo/issues"
 [project.optional-dependencies]
 test = ["tox", "pytest", "coverage"]
 lint = [ "black", "flake8"]
-#cov = ["pytest < 5.0.0", "pytest-cov[all]"]
