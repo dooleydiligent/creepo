@@ -33,8 +33,8 @@ class ComposerProxy:
      }
     """
 
-    def __init__(self, config, logger):
-        self.logger = logger
+    def __init__(self, config):
+        self.logger = config['logger']
         self.config = config
         self.key = 'p2'
         if self.key not in self.config:
