@@ -22,6 +22,13 @@ sphinx = "^7.2.6"
 sphinx-rtd-theme = "^2.0.0"
 diskcache = "^5.6.3"
 
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore: pkg_resources is deprecated as an API",
+    "ignore: Deprecated call to `pkg_resources.declare_namespace",
+]
+
 [tool.coverage.run]
 omit = [
     "venv/*",

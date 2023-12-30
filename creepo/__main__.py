@@ -29,7 +29,10 @@ if __name__ == '__main__':
         with open(f"{PROJECT_DIR}/config.yml", encoding="utf-8") as file:
             config = yaml.safe_load(file.read())
     else:
-        logger.info('No config found')
+        logger.info('No config found - all defaults accepted')
+
+    config['logger'] = logger
+
     if 'port' not in config:
         config['port'] = 4443
 
@@ -44,7 +47,8 @@ if __name__ == '__main__':
     with open(client, 'r', encoding='utf-8') as f:
         output = f.read()
         f.close()
-        logger.info('Use the following certificate to secure your client(s)\n\n%s\n\n', output)
+        logger.info(
+            'Use the following certificate to secure your client(s)\n\n%s\n\n', output)
 
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',
@@ -56,19 +60,19 @@ if __name__ == '__main__':
     })
 
     logger.debug('instantiating mavenProxy at /m2')
-    cherrypy.tree.graft(MavenProxy(config, logger).m2, '/m2')
+    cherrypy.tree.graft(MavenProxy(config).m2, '/m2')
 
     logger.debug('instantiating proxy at /npm')
-    cherrypy.tree.graft(NpmProxy(config, logger).npm, '/npm')
+    cherrypy.tree.graft(NpmProxy(config).npm, '/npm')
 
     logger.debug('instantiating pipproxy at /pip')
-    cherrypy.tree.graft(PipProxy(config, logger).pip, '/pip')
+    cherrypy.tree.graft(PipProxy(config).pip, '/pip')
 
     logger.debug('instantiating dockerproxy at /v2')
-    cherrypy.tree.graft(DockerProxy(config, logger).v2, '/v2')
+    cherrypy.tree.graft(DockerProxy(config).v2, '/v2')
 
     logger.debug('instantiating composerproxy at /composer')
-    cherrypy.tree.graft(ComposerProxy(config, logger).p2, '/p2')
+    cherrypy.tree.graft(ComposerProxy(config).p2, '/p2')
 
     cherrypy.tree.mount(None, '/',
                         {

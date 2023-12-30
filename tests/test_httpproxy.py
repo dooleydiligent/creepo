@@ -1,62 +1,21 @@
-"""Unit tests for Proxy while mocking cherrypy """
+"""Unit tests for Proxy while mocking cherrypy (and others)"""
 import unittest
 import tempfile
-
 from unittest.mock import patch
 
+from diskcache import Cache
+
+from mocks import MockedLogger, MockedPoolManager
 from creepo.httpproxy import Proxy  # pylint: disable=import-outside-toplevel
 
 
-class MockedLogger:  # pylint: disable=missing-class-docstring, missing-function-docstring, unused-argument
-    def __init__(self, log):
-        self.log = log
-
-    def info(self, *args):
-        print(args)
-        for arg in args:
-            self.log.append(arg)
-
-    def debug(self, *args):
-        print(args)
-        for arg in args:
-            self.log.append(arg)
-
-    def warning(self, *args):
-        print(args)
-        for arg in args:
-            self.log.append(arg)
-
-
-class MockedPoolManager:  # pylint: disable=missing-class-docstring, missing-function-docstring, unused-argument
-
-    class Response:
-        @property
-        def status(self):
-            return 200
-
-        @property
-        def headers(self):
-            return {}
-
-        @property
-        def data(self):
-            print("this is mock request")
-            return b'It werkz!'
-
-        def release_conn(self):
-            print("release_conn")
-
-    def request(self, method, url, decode_content, preload_content, headers) -> Response:
-        return self.Response()
-
-
-class TestHttpProxy(unittest.TestCase):
+class TestHttpProxyCache(unittest.TestCase):
     """Unit tests for httpproxy module using cherrypy and mocks"""
 
-    def test_persist(self):
+    def test_no_cache_false(self):
         """Test for persist - just testing the cache here"""
 
-        def start_response(status, _headers):
+        def start_ok_response(status, headers):  # pylint: disable=unused-argument
             self.assertEqual(status, '200 OK')
 
         request = {
@@ -68,16 +27,76 @@ class TestHttpProxy(unittest.TestCase):
             'log': []
         }
 
+        content = b"It werx!"
         request['logger'] = MockedLogger(request['log'])
 
         with patch('urllib3.PoolManager') as mock_poolmanager:
-            mock_poolmanager.return_value = MockedPoolManager()
 
             with tempfile.TemporaryDirectory() as tmpdirname:
                 with unittest.mock.patch.dict('os.environ', {'HOME': tmpdirname}):
 
+                    mock_poolmanager.return_value = MockedPoolManager(
+                        status_code=200, response_headers={}, content=content)
+
                     proxy = Proxy(
                         "test", {'registry': 'https://some.random.url/path:10111'}, {'no_cache': 'False'})
+
+                    result = proxy.proxy(
+                        request, start_ok_response)
+                    #
+                    # Note: Leave both of the next two 'print' statements in place to facilitate debugging
+                    #       ATM I speculate that request['response'] does not get populated until the "result"
+                    #       generator is listed, e.g. list(result), below
+                    print(
+                        f"  Actual  type: {type(result)}: value: {list(result)}")
+                    print(
+                        f"Leave this in place to capture MockedLogger output\n{request}")
+
+                    self.assertNotEqual(request.get(
+                        'response'), None, "Expected a response in the original request")
+
+                    self.assertEqual(
+                        request['response'], content, "Expected the mocked response")
+
+                    with Cache(proxy.base) as cache:
+                        testdata = cache.get(request['output_filename'])
+                        self.assertNotEqual(
+                            testdata, None, 'Expect to cache the response but it was not found')
+                        self.assertEqual(
+                            testdata, content, "Expected the actual response to have been cached but found something else")
+
+                    # Subsequent requests work slightly differently
+                    result = proxy.proxy(request, start_ok_response)
+
+    def test_no_cache_true(self):
+        """Test persistence"""
+
+        def start_response(status, headers):  # pylint: disable=unused-argument
+            self.assertEqual(status, '200 OK')
+
+        request = {
+            'path': '/proxy/file.name',
+            'storage': 'test',
+            'content_type': 'text/html',
+            'headers': {},
+            'method': 'GET',
+            'log': []
+        }
+
+        content = b"It werx!"
+
+        request['logger'] = MockedLogger(request['log'])
+
+        with patch('urllib3.PoolManager') as mock_poolmanager:
+
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                with unittest.mock.patch.dict('os.environ', {'HOME': tmpdirname}):
+
+                    mock_poolmanager.return_value = MockedPoolManager(
+                        status_code=200, response_headers={}, content=content)
+
+                    proxy = Proxy(
+                        "test", {'registry': 'https://some.random.url/path:10111'}, {})
 
                     result = proxy.proxy(request, start_response)
                     #
@@ -89,8 +108,13 @@ class TestHttpProxy(unittest.TestCase):
                     print(
                         f"Leave this in place to capture MockedLogger output\n{request}")
 
-        self.assertNotEqual(request.get(
-            'response'), None, "Expected a response in the original request")
+                self.assertNotEqual(request.get(
+                    'response'), None, "Expected the response in the original request")
 
-        self.assertEqual(
-            request['response'], b"It werkz!", "Expected the mocked response")
+                self.assertEqual(
+                    request.get('response'), content, "Expected the mocked response")
+
+                with Cache(proxy.base) as cache:
+                    testdata = cache.get(request['output_filename'])
+                    self.assertEqual(
+                        testdata, None, 'Expect NOT to cache the response but it was found instead')

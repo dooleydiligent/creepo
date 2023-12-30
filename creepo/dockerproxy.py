@@ -8,8 +8,8 @@ from httpproxy import Proxy
 class DockerProxy:  # pylint: disable=too-few-public-methods
     """A docker proxy"""
 
-    def __init__(self, config, logger):
-        self.logger = logger
+    def __init__(self, config):
+        self.logger = config['logger']
         self.config = config
         self.key = 'docker'
         if self.key not in self.config:
