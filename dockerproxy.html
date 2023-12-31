@@ -41,16 +41,14 @@
 <font color="#000000" face="helvetica, arial"><a name="DockerProxy">class <strong>DockerProxy</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#DockerProxy">DockerProxy</a>(config,&nbsp;logger)<br>
+<td colspan=2><tt><a href="#DockerProxy">DockerProxy</a>(config)<br>
 &nbsp;<br>
 A&nbsp;docker&nbsp;proxy<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="DockerProxy-__init__"><strong>__init__</strong></a>(self, config, logger)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="DockerProxy-__init__"><strong>__init__</strong></a>(self, config)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="DockerProxy-callback"><strong>callback</strong></a>(self, _input_bytes, request)</dt><dd><tt>A&nbsp;callback&nbsp;to&nbsp;write&nbsp;the&nbsp;file</tt></dd></dl>
-
-<dl><dt><a name="DockerProxy-v2"><strong>v2</strong></a>(self, environ, start_response)</dt><dd><tt>Proxy&nbsp;a&nbsp;docker&nbsp;request.</tt></dd></dl>
+<dl><dt><a name="DockerProxy-proxy"><strong>proxy</strong></a>(self, environ, start_response)</dt><dd><tt>Proxy&nbsp;a&nbsp;docker&nbsp;request.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>

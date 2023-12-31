@@ -18,24 +18,22 @@ class MavenProxy:  # pylint: disable=too-few-public-methods
             self.config[self.key] = {
                 'registry': 'https://repo.maven.apache.org/maven2'}
 
-        self.proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('MavenProxy instantiated with %s',
                           self.config[self.key])
 
     @cherrypy.expose
-    def m2(self, environ, start_response):
+    def proxy(self, environ, start_response):
         """Proxy a maven request."""
         path = environ["REQUEST_URI"].removeprefix("/m2")
         self.logger.debug('%s %s m2(%s)', __name__,
                           cherrypy.request.method, path)
 
         newpath = path
-        if cherrypy.request.query_string != '':
-            newpath = f"{newpath}?{cherrypy.request.query_string}"
 
         newrequest = {}
 
-        newrequest['content_type'] = self.proxy.mimetype(
+        newrequest['content_type'] = self._proxy.mimetype(
             path, 'application/octet-stream')
         newrequest['method'] = cherrypy.request.method
         newrequest['path'] = newpath
@@ -44,4 +42,4 @@ class MavenProxy:  # pylint: disable=too-few-public-methods
         newrequest['actual_request'] = cherrypy.request
         newrequest['logger'] = self.logger
 
-        return self.proxy.proxy(newrequest, start_response)
+        return self._proxy.proxy(newrequest, start_response)

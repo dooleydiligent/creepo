@@ -66,6 +66,35 @@ class Proxy:
             with Cache(self.base) as cache:
                 cache.set(request['output_filename'], request['response'])
 
+    def gethttp(self):
+        """convenience method to configure the http request engine"""
+        ca_certs = ()
+        if self.config.get('cacert') is not None:
+            ca_certs = self.config['cacert']
+
+        http = urllib3.PoolManager(ca_certs=ca_certs, num_pools=10000)
+
+        if self.config.get('proxy') is not None:
+            default_headers = make_headers()
+            if self.config.get('proxy_user') is not None:
+                default_headers = make_headers(
+                    proxy_basic_auth=self.config['proxy_user'] +
+                    ':' + self.config['proxy_password'])
+            http = ProxyManager(self.config.get(
+                'proxy'), proxy_headers=default_headers, num_pools=10000)
+        return http
+
+    def getheaders(self, environ):
+        """convenience method to get the proper headers for the request"""
+        headers = environ['headers']
+        headers['content-type'] = self.mimetype(
+            environ['path'], environ['content_type'])
+        if self.config.get('credentials') is not None:
+            headers = headers | urllib3.make_headers(
+                basic_auth=self.config.get('credentials').get('username') + ':' +
+                self.config.get('credentials').get('password')
+            )
+        return headers
     def proxy(self, environ, start_response):
         """The proxy method is the work engine for everything, including caching, if enabled"""
         environ['output_filename'] = f"{environ['storage']}{environ['path']}"
@@ -73,30 +102,8 @@ class Proxy:
         callback = environ.get('callback')
 
         if self.no_cache or Cache(self.base).get(environ['output_filename']) is None:
-
-            ca_certs = ()
-            if self.config.get('cacert') is not None:
-                ca_certs = self.config['cacert']
-
-            http = urllib3.PoolManager(ca_certs=ca_certs, num_pools=10000)
-
-            if self.config.get('proxy') is not None:
-                default_headers = make_headers()
-                if self.config.get('proxy_user') is not None:
-                    default_headers = make_headers(
-                        proxy_basic_auth=self.config['proxy_user'] +
-                        ':' + self.config['proxy_password'])
-                http = ProxyManager(self.config.get(
-                    'proxy'), proxy_headers=default_headers, num_pools=10000)
-
-            headers = environ['headers']
-            headers['content-type'] = self.mimetype(
-                environ['path'], environ['content_type'])
-            if self.config.get('credentials') is not None:
-                headers = headers | urllib3.make_headers(
-                    basic_auth=self.config.get('credentials').get('username') + ':' +
-                    self.config.get('credentials').get('password')
-                )
+            http = self.gethttp()
+            headers = self.getheaders(environ)
 
             source_url = f"{self._upstream}{environ['path']}"
 

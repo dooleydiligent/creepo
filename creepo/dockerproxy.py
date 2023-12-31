@@ -5,6 +5,7 @@ import cherrypy
 
 from httpproxy import Proxy
 
+
 class DockerProxy:  # pylint: disable=too-few-public-methods
     """A docker proxy"""
 
@@ -16,12 +17,12 @@ class DockerProxy:  # pylint: disable=too-few-public-methods
             self.config[self.key] = {
                 'registry': 'https://registry-1.docker.io'}
 
-        self.proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('DockerProxy instantiated with %s',
                           self.config[self.key])
 
     @cherrypy.expose
-    def v2(self, environ, start_response):
+    def proxy(self, environ, start_response):
         """Proxy a docker request."""
         path = environ["REQUEST_URI"]
         self.logger.debug('%s %s v2(%s)', __name__,
@@ -53,4 +54,4 @@ class DockerProxy:  # pylint: disable=too-few-public-methods
         newrequest['actual_request'] = cherrypy.request
         self.logger.debug('%s %s', __name__, newrequest)
         newrequest['logger'] = self.logger
-        return self.proxy.proxy(newrequest, start_response)
+        return self._proxy.proxy(newrequest, start_response)

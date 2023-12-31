@@ -8,6 +8,7 @@ import json
 import urllib.parse
 from urllib.parse import urlparse
 import cherrypy
+
 from httpproxy import Proxy
 
 
@@ -41,7 +42,7 @@ class ComposerProxy:
             self.config[self.key] = {
                 'registry': 'https://packagist.org', 'self': 'https://localhost:4443/p2'}
 
-        self.proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('ComposerProxy instantiated with %s',
                           self.config[self.key])
 
@@ -54,7 +55,7 @@ class ComposerProxy:
         to self-relative urls
 
         """
-
+        self.logger.debug('%s received type(%s) as %s ', __name__, type(_input_bytes), _input_bytes)
         data = json.load(io.BytesIO(_input_bytes))
 
         for package in data['packages']:
@@ -73,7 +74,7 @@ class ComposerProxy:
         request['response'] = bytes(json.dumps(data), 'utf-8')
 
     @cherrypy.expose
-    def p2(self, environ, start_response):
+    def proxy(self, environ, start_response):
         """
         Proxy a composer request.
 
@@ -119,10 +120,10 @@ class ComposerProxy:
                 newpath.split('?')[0], 'text/html')
             return dynamic_proxy.proxy(newrequest, start_response)
 
-        newrequest['content_type'] = self.proxy.mimetype(
+        newrequest['content_type'] = self._proxy.mimetype(
             path, 'application/octet-stream')
 
         newrequest['path'] = newpath
         newrequest['storage'] = self.key
         newrequest['callback'] = self.callback
-        return self.proxy.proxy(newrequest, start_response)
+        return self._proxy.proxy(newrequest, start_response)

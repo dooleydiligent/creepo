@@ -43,31 +43,29 @@
 <font color="#000000" face="helvetica, arial"><a name="ComposerProxy">class <strong>ComposerProxy</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#ComposerProxy">ComposerProxy</a>(config,&nbsp;logger)<br>
+<td colspan=2><tt><a href="#ComposerProxy">ComposerProxy</a>(config)<br>
 &nbsp;<br>
-Default&nbsp;configuration:&nbsp;{&nbsp;'registry'&nbsp;:&nbsp;'<a href="https://packagist.org">https://packagist.org</a>'&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Default&nbsp;configuration:&nbsp;{&nbsp;'registry'&nbsp;:&nbsp;'<a href="https://packagist.org">https://packagist.org</a>'&nbsp;}<br>
 &nbsp;<br>
-Exposed&nbsp;at&nbsp;endpoint&nbsp;/p2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exposed&nbsp;at&nbsp;endpoint&nbsp;/p2<br>
 &nbsp;<br>
-When&nbsp;no_cache&nbsp;is&nbsp;not&nbsp;True&nbsp;then&nbsp;we&nbsp;will&nbsp;host&nbsp;selected&nbsp;'source'&nbsp;and&nbsp;'dist'&nbsp;packages<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;no_cache&nbsp;is&nbsp;not&nbsp;True&nbsp;then&nbsp;we&nbsp;will&nbsp;host&nbsp;selected&nbsp;'source'&nbsp;and&nbsp;'dist'&nbsp;packages<br>
 &nbsp;<br>
-Configure&nbsp;a&nbsp;project&nbsp;to&nbsp;use&nbsp;Creepo&nbsp;by&nbsp;adding&nbsp;this&nbsp;to&nbsp;composer.json:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Configure&nbsp;a&nbsp;project&nbsp;to&nbsp;use&nbsp;Creepo&nbsp;by&nbsp;adding&nbsp;this&nbsp;to&nbsp;composer.json:<br>
 &nbsp;<br>
-```<br>
-"repositories":&nbsp;[<br>
-{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;"type":&nbsp;"composer",<br>
-&nbsp;&nbsp;&nbsp;&nbsp;"url":&nbsp;"<a href="https://${HOST_IP}:4443/p2/">https://${HOST_IP}:4443/p2/</a>"<br>
-},<br>
-{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;"packagist.org":&nbsp;false<br>
-}<br>
-],<br>
+..&nbsp;code-block::&nbsp;json<br>
 &nbsp;<br>
-```<br>&nbsp;</tt></td></tr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"repositories":&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type":&nbsp;"composer",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"url":&nbsp;"<a href="https://${HOST_IP}:4443/p2/">https://${HOST_IP}:4443/p2/</a>"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="ComposerProxy-__init__"><strong>__init__</strong></a>(self, config, logger)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="ComposerProxy-__init__"><strong>__init__</strong></a>(self, config)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
 <dl><dt><a name="ComposerProxy-callback"><strong>callback</strong></a>(self, _input_bytes, request)</dt><dd><tt>When&nbsp;<a href="#ComposerProxy">ComposerProxy</a>&nbsp;acts&nbsp;as&nbsp;a&nbsp;registry&nbsp;it&nbsp;will&nbsp;retrieve&nbsp;meta-data&nbsp;from&nbsp;the&nbsp;configured&nbsp;<br>
 upstream&nbsp;proxy.<br>
@@ -75,10 +73,7 @@ upstream&nbsp;proxy.<br>
 If&nbsp;no_cache&nbsp;is&nbsp;not&nbsp;True&nbsp;then&nbsp;the&nbsp;source&nbsp;and&nbsp;dist&nbsp;urls&nbsp;of&nbsp;the&nbsp;meta-data&nbsp;are&nbsp;re-written&nbsp;<br>
 to&nbsp;self-relative&nbsp;urls</tt></dd></dl>
 
-<dl><dt><a name="ComposerProxy-noopcallback"><strong>noopcallback</strong></a>(self, _input_bytes, request)</dt><dd><tt>When&nbsp;<a href="#ComposerProxy">ComposerProxy</a>&nbsp;retrieves&nbsp;source&nbsp;and&nbsp;dist&nbsp;packages&nbsp;on&nbsp;behalf&nbsp;of&nbsp;a&nbsp;client,<br>
-these&nbsp;will&nbsp;be&nbsp;persisted&nbsp;if&nbsp;no_cache&nbsp;is&nbsp;not&nbsp;True.</tt></dd></dl>
-
-<dl><dt><a name="ComposerProxy-p2"><strong>p2</strong></a>(self, environ, start_response)</dt><dd><tt>Proxy&nbsp;a&nbsp;composer&nbsp;request.<br>
+<dl><dt><a name="ComposerProxy-proxy"><strong>proxy</strong></a>(self, environ, start_response)</dt><dd><tt>Proxy&nbsp;a&nbsp;composer&nbsp;request.<br>
 &nbsp;<br>
 Creepo&nbsp;exposes&nbsp;a&nbsp;WSGI-compliant&nbsp;server&nbsp;at&nbsp;/p2</tt></dd></dl>
 
