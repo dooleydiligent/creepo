@@ -40,3 +40,7 @@ jobs:
         # mime and cherrypy cannot be found during testing - here but not locally
         pip install cherrypy mime diskcache lxml
         coverage run -m pytest .
+    - name: pydoc with sphinx
+      run: |
+        pip install sphinx sphinx_rtd_theme myst_parser
+        sphinx-build docs _build
