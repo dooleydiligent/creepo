@@ -10,6 +10,7 @@ import cherrypy
 from dockerproxy import DockerProxy
 from composerproxy import ComposerProxy
 
+from apkproxy import ApkProxy
 from mvnproxy import MavenProxy
 from pipproxy import PipProxy
 from npmproxy import NpmProxy
@@ -74,6 +75,9 @@ if __name__ == '__main__':
 
     logger.debug('instantiating composerproxy at /composer')
     cherrypy.tree.graft(ComposerProxy(config).proxy, '/p2')
+
+    logger.debug('instantiating apkproxy at /alpine')
+    cherrypy.tree.graft(ApkProxy(config).proxy, '/alpine')
 
     cherrypy.tree.mount(None, '/',
                         {
