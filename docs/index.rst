@@ -16,7 +16,7 @@ And always you must have already forgotten more than your network engineer will 
 
 Instead, Creepo is intended to be configured with a global proxy to act as a sort of gateway to various artifact repositories, either inside or outside of the local network.
 
-- Use Creepo behind a corporate firewall to proxy well used upstream repositories, such as npm, pip, maven, composer, and docker.  This allows you to shape network traffic efficiently.
+- Use Creepo behind a corporate firewall to proxy well used upstream repositories, such as npm, pip, maven, composer, apk, and docker.  This allows you to shape network traffic efficiently.
 
 - Use Creepo to take a "snapshot" of build dependencies for later analysis, such as license query or vulnerability scans.
 
