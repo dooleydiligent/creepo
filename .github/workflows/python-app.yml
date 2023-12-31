@@ -43,4 +43,4 @@ jobs:
     - name: pydoc with sphinx
       run: |
         pip install sphinx sphinx_rtd_theme myst_parser
-        sphinx-build docs _build
+        sphinx-build docs sphinx
