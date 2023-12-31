@@ -18,7 +18,7 @@ class PipProxy:
             self.config[self.key] = {
                 'registry': 'https://pypi.org/simple', 'self': 'https://localhost:4443/pip'}
 
-        self.proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('PipProxy instantiated with %s',
                           self.config[self.key])
 
@@ -42,7 +42,7 @@ class PipProxy:
         request['response'] = doc
 
     @cherrypy.expose
-    def pip(self, environ, start_response):
+    def proxy(self, environ, start_response):
         '''Proxy a pip repo request.'''
         path = environ["REQUEST_URI"].removeprefix("/pip")
         self.logger.info('%s The request.uri is %s', __name__, path)
@@ -67,4 +67,4 @@ class PipProxy:
         newrequest['storage'] = self.key
         newrequest['logger'] = self.logger
         newrequest['callback'] = self.callback
-        return self.proxy.proxy(newrequest, start_response)
+        return self._proxy.proxy(newrequest, start_response)

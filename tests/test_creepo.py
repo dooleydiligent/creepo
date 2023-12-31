@@ -1,9 +1,17 @@
 """
 A Creepo test suite
 """
+import os
+import sys
+
 import cherrypy
 from cherrypy.test import helper
-import creepo.rest
+
+
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..")))
+
+import creepo.rest # pylint: disable=wrong-import-position
 
 
 class SimpleCherryPyTest(helper.CPWebCase):

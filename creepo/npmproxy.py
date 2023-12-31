@@ -22,7 +22,7 @@ class NpmProxy:  # pylint: disable=fixme
         if self.key not in self.config:
             self.config[self.key] = {'registry': 'https://registry.npmjs.org'}
 
-        self.proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = Proxy(__name__, self.config[self.key], self.config)
         self.logger.debug('NpmProxy instantiated with %s',
                           self.config[self.key])
 
@@ -55,7 +55,7 @@ class NpmProxy:  # pylint: disable=fixme
         request['response'] = bytes(json.dumps(data), 'utf-8')
 
     @cherrypy.expose
-    def npm(self, environ, start_response):
+    def proxy(self, environ, start_response):
         '''Proxy an npm request.'''
         path = environ["REQUEST_URI"].removeprefix("/npm")
         newpath = path
@@ -85,4 +85,4 @@ class NpmProxy:  # pylint: disable=fixme
         self.logger.info('%s Requesting file %s', __name__, newpath)
         newrequest['logger'] = self.logger
         newrequest['callback'] = self.callback
-        return self.proxy.proxy(newrequest, start_response)
+        return self._proxy.proxy(newrequest, start_response)

@@ -6,7 +6,7 @@ from unittest.mock import patch
 from diskcache import Cache
 
 from mocks import MockedLogger, MockedPoolManager
-from creepo.httpproxy import Proxy  # pylint: disable=import-outside-toplevel
+from creepo.httpproxy import Proxy
 
 
 class TestHttpProxyCache(unittest.TestCase):

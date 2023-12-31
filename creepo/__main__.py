@@ -9,6 +9,7 @@ import cherrypy
 
 from dockerproxy import DockerProxy
 from composerproxy import ComposerProxy
+
 from mvnproxy import MavenProxy
 from pipproxy import PipProxy
 from npmproxy import NpmProxy
@@ -60,19 +61,19 @@ if __name__ == '__main__':
     })
 
     logger.debug('instantiating mavenProxy at /m2')
-    cherrypy.tree.graft(MavenProxy(config).m2, '/m2')
+    cherrypy.tree.graft(MavenProxy(config).proxy, '/m2')
 
     logger.debug('instantiating proxy at /npm')
-    cherrypy.tree.graft(NpmProxy(config).npm, '/npm')
+    cherrypy.tree.graft(NpmProxy(config).proxy, '/npm')
 
     logger.debug('instantiating pipproxy at /pip')
-    cherrypy.tree.graft(PipProxy(config).pip, '/pip')
+    cherrypy.tree.graft(PipProxy(config).proxy, '/pip')
 
     logger.debug('instantiating dockerproxy at /v2')
-    cherrypy.tree.graft(DockerProxy(config).v2, '/v2')
+    cherrypy.tree.graft(DockerProxy(config).proxy, '/v2')
 
     logger.debug('instantiating composerproxy at /composer')
-    cherrypy.tree.graft(ComposerProxy(config).p2, '/p2')
+    cherrypy.tree.graft(ComposerProxy(config).proxy, '/p2')
 
     cherrypy.tree.mount(None, '/',
                         {
