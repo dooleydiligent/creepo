@@ -144,6 +144,9 @@ class Proxy:
                     environ['logger'].warning(
                         '%s.%s ***WARNING***: Unexpected status %d for %s',
                         self._kind, __name__, r.status, source_url)
+                    print(
+                        '%s.%s ***WARNING***: Unexpected status %d for %s',
+                        self._kind, __name__, r.status, source_url)
                     start_response(
                         f"{r.status} {responses[r.status]}", list(r.headers.items()))
                     yield r.data

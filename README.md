@@ -163,3 +163,12 @@ aa509fd13681: Download complete
 3731688bad93: Download complete 
 
 ```
+### Use it as an apk proxy to speed up Docker builds
+```
+#
+# Probably you should use an authoritative ssl certificate and proper DNS resolution
+#   this is only a test
+#
+
+docker build --network host  --add-host trustme:192.168.0.115 -t test .
+```

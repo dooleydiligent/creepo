@@ -23,7 +23,7 @@ Instead, Creepo is intended to be configured with a global proxy to act as a sor
 - Use Creepo to facilitate an "air-gapped" installation of some other application.
 
 -- `Visit the repository <https://github.com/dooleydiligent/creepo>`_
-| `PyDoc <https://dooleydiligent.github.io/creepo/pydoc.html>`_
+| `PyDoc <https://dooleydiligent.github.io/creepo/sphinx/index.html>`_
 | `Unit Test Coverage <https://dooleydiligent.github.io/creepo/htmlcov/index.html>`_
 
 
