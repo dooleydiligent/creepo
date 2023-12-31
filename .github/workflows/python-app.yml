@@ -38,5 +38,5 @@ jobs:
     - name: Coverage with pytest
       run: |
         # mime and cherrypy cannot be found during testing - here but not locally
-        pip install cherrypy mime diskcache
+        pip install cherrypy mime diskcache lxml
         coverage run -m pytest .
