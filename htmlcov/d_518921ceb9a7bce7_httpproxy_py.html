@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for creepo/httpproxy.py: 83%</title>
+    <title>Coverage for creepo/httpproxy.py: 82%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="coverage_html.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>creepo/httpproxy.py</b>:
-            <span class="pc_cov">83%</span>
+            <span class="pc_cov">82%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -54,18 +54,18 @@
             </div>
         </aside>
         <h2>
-            <span class="text">89 statements &nbsp;</span>
+            <span class="text">90 statements &nbsp;</span>
             <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">74<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">15<span class="text"> missing</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">16<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
-            <a id="prevFileLink" class="nav" href="d_518921ceb9a7bce7_dockerproxy_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="d_518921ceb9a7bce7_genericproxy_py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="d_518921ceb9a7bce7_mvnproxy_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.0">coverage.py v7.4.0</a>,
-            created at 2023-12-31 10:39 -0500
+            created at 2023-12-31 18:08 -0500
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -226,33 +226,36 @@
     <p class="mis show_mis"><span class="n"><a id="t144" href="#t144">144</a></span><span class="t">                    <span class="nam">environ</span><span class="op">[</span><span class="str">'logger'</span><span class="op">]</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t145" href="#t145">145</a></span><span class="t">                        <span class="str">'%s.%s ***WARNING***: Unexpected status %d for %s'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t146" href="#t146">146</a></span><span class="t">                        <span class="nam">self</span><span class="op">.</span><span class="nam">_kind</span><span class="op">,</span> <span class="nam">__name__</span><span class="op">,</span> <span class="nam">r</span><span class="op">.</span><span class="nam">status</span><span class="op">,</span> <span class="nam">source_url</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t">                    <span class="nam">start_response</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t">                        <span class="str">f"{r.status} {responses[r.status]}"</span><span class="op">,</span> <span class="nam">list</span><span class="op">(</span><span class="nam">r</span><span class="op">.</span><span class="nam">headers</span><span class="op">.</span><span class="nam">items</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t149" href="#t149">149</a></span><span class="t">                    <span class="key">yield</span> <span class="nam">r</span><span class="op">.</span><span class="nam">data</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t150" href="#t150">150</a></span><span class="t">                <span class="nam">r</span><span class="op">.</span><span class="nam">release_conn</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t151" href="#t151">151</a></span><span class="t">                <span class="key">if</span> <span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">no_cache</span> <span class="key">and</span> <span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'response'</span><span class="op">)</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t">                    <span class="nam">self</span><span class="op">.</span><span class="nam">persist</span><span class="op">(</span><span class="nam">environ</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t153" href="#t153">153</a></span><span class="t">            <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t154" href="#t154">154</a></span><span class="t">                <span class="nam">environ</span><span class="op">[</span><span class="str">'logger'</span><span class="op">]</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">                    <span class="str">'%s.%s WARNING: There is no file_path for %s'</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_kind</span><span class="op">,</span> <span class="nam">__name__</span><span class="op">,</span> <span class="nam">source_url</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t156" href="#t156">156</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">            <span class="nam">start_response</span><span class="op">(</span><span class="str">'200 OK'</span><span class="op">,</span> <span class="op">[</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">                           <span class="op">(</span><span class="str">'Content-Type'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">                            <span class="nam">self</span><span class="op">.</span><span class="nam">mimetype</span><span class="op">(</span><span class="nam">environ</span><span class="op">[</span><span class="str">'path'</span><span class="op">]</span><span class="op">,</span> <span class="nam">environ</span><span class="op">[</span><span class="str">'content_type'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">            <span class="key">with</span> <span class="nam">Cache</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">base</span><span class="op">)</span> <span class="key">as</span> <span class="nam">cache</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">                <span class="nam">result</span> <span class="op">=</span> <span class="nam">cache</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">environ</span><span class="op">[</span><span class="str">'output_filename'</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">                <span class="key">yield</span> <span class="nam">result</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t">                    <span class="nam">print</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t">                        <span class="str">'%s.%s ***WARNING***: Unexpected status %d for %s'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t149" href="#t149">149</a></span><span class="t">                        <span class="nam">self</span><span class="op">.</span><span class="nam">_kind</span><span class="op">,</span> <span class="nam">__name__</span><span class="op">,</span> <span class="nam">r</span><span class="op">.</span><span class="nam">status</span><span class="op">,</span> <span class="nam">source_url</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t150" href="#t150">150</a></span><span class="t">                    <span class="nam">start_response</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t151" href="#t151">151</a></span><span class="t">                        <span class="str">f"{r.status} {responses[r.status]}"</span><span class="op">,</span> <span class="nam">list</span><span class="op">(</span><span class="nam">r</span><span class="op">.</span><span class="nam">headers</span><span class="op">.</span><span class="nam">items</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t">                    <span class="key">yield</span> <span class="nam">r</span><span class="op">.</span><span class="nam">data</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t153" href="#t153">153</a></span><span class="t">                <span class="nam">r</span><span class="op">.</span><span class="nam">release_conn</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t154" href="#t154">154</a></span><span class="t">                <span class="key">if</span> <span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">no_cache</span> <span class="key">and</span> <span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'response'</span><span class="op">)</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">                    <span class="nam">self</span><span class="op">.</span><span class="nam">persist</span><span class="op">(</span><span class="nam">environ</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t156" href="#t156">156</a></span><span class="t">            <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">                <span class="nam">environ</span><span class="op">[</span><span class="str">'logger'</span><span class="op">]</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">                    <span class="str">'%s.%s WARNING: There is no file_path for %s'</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_kind</span><span class="op">,</span> <span class="nam">__name__</span><span class="op">,</span> <span class="nam">source_url</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">            <span class="nam">start_response</span><span class="op">(</span><span class="str">'200 OK'</span><span class="op">,</span> <span class="op">[</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">                           <span class="op">(</span><span class="str">'Content-Type'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">                            <span class="nam">self</span><span class="op">.</span><span class="nam">mimetype</span><span class="op">(</span><span class="nam">environ</span><span class="op">[</span><span class="str">'path'</span><span class="op">]</span><span class="op">,</span> <span class="nam">environ</span><span class="op">[</span><span class="str">'content_type'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t164" href="#t164">164</a></span><span class="t">            <span class="key">with</span> <span class="nam">Cache</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">base</span><span class="op">)</span> <span class="key">as</span> <span class="nam">cache</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t165" href="#t165">165</a></span><span class="t">                <span class="nam">result</span> <span class="op">=</span> <span class="nam">cache</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">environ</span><span class="op">[</span><span class="str">'output_filename'</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t166" href="#t166">166</a></span><span class="t">                <span class="key">yield</span> <span class="nam">result</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
         <p>
-            <a id="prevFileLink" class="nav" href="d_518921ceb9a7bce7_dockerproxy_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="d_518921ceb9a7bce7_genericproxy_py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="d_518921ceb9a7bce7_mvnproxy_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.0">coverage.py v7.4.0</a>,
-            created at 2023-12-31 10:39 -0500
+            created at 2023-12-31 18:08 -0500
         </p>
     </div>
 </footer>

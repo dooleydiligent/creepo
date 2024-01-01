@@ -1,4 +1,4 @@
-"""A docker proxy"""
+"""A generic proxy"""
 import mime
 
 import cherrypy
@@ -6,25 +6,22 @@ import cherrypy
 from httpproxy import Proxy
 
 
-class DockerProxy:  # pylint: disable=too-few-public-methods
-    """A docker proxy"""
+class GenericProxy:  # pylint: disable=too-few-public-methods
+    """A generic proxy"""
 
-    def __init__(self, config):
+    def __init__(self, config, base):
         self.logger = config['logger']
         self.config = config
-        self.key = 'docker'
-        if self.key not in self.config:
-            self.config[self.key] = {
-                'registry': 'https://registry-1.docker.io'}
-
-        self._proxy = Proxy(__name__, self.config[self.key], self.config)
-        self.logger.debug('DockerProxy instantiated with %s',
-                          self.config[self.key])
+        self.key = base
+        self._proxy = Proxy(base, config[base], config)
+        
+        self.logger.debug('GenericProxy instantiated at %s for upstream %s',
+                          base, config[base]['registry'])
 
     @cherrypy.expose
     def proxy(self, environ, start_response):
         """Proxy a docker request."""
-        path = environ["REQUEST_URI"]
+        path = environ["REQUEST_URI"].removeprefix("/m2")
         self.logger.debug('%s %s v2(%s)', __name__,
                           cherrypy.request.method, environ)
 

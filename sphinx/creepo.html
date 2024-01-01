@@ -98,9 +98,9 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-creepo">Module contents</a><ul>
-<li><a class="reference internal" href="#creepo.Creepo"><code class="docutils literal notranslate"><span class="pre">Creepo</span></code></a><ul>
-<li><a class="reference internal" href="#creepo.Creepo.hello"><code class="docutils literal notranslate"><span class="pre">Creepo.hello()</span></code></a></li>
+<li><a class="reference internal" href="#module-apkproxy">apkproxy module</a><ul>
+<li><a class="reference internal" href="#apkproxy.ApkProxy"><code class="docutils literal notranslate"><span class="pre">ApkProxy</span></code></a><ul>
+<li><a class="reference internal" href="#apkproxy.ApkProxy.proxy"><code class="docutils literal notranslate"><span class="pre">ApkProxy.proxy()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -323,18 +323,18 @@ scala, gradle, and similar tools</p>
 </dd></dl>
 
 </section>
-<section id="module-creepo">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-creepo" title="Link to this heading"></a></h2>
-<p>The creepo class</p>
+<section id="module-apkproxy">
+<span id="apkproxy-module"></span><h2>apkproxy module<a class="headerlink" href="#module-apkproxy" title="Link to this heading"></a></h2>
+<p>Alpine - proxy <a class="reference external" href="https://dl-cdn.alpinelinux.org/alpine/">https://dl-cdn.alpinelinux.org/alpine/</a> to proxy apk packages</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="creepo.Creepo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">creepo.</span></span><span class="sig-name descname"><span class="pre">Creepo</span></span><a class="reference internal" href="_modules/creepo.html#Creepo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creepo.Creepo" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="apkproxy.ApkProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apkproxy.</span></span><span class="sig-name descname"><span class="pre">ApkProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apkproxy.html#ApkProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apkproxy.ApkProxy" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The Creepo class</p>
+<p>An apk proxy to help speed up docker builds</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="creepo.Creepo.hello">
-<span class="sig-name descname"><span class="pre">hello</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/creepo.html#Creepo.hello"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creepo.Creepo.hello" title="Link to this definition"></a></dt>
-<dd><p>A simple hello method</p>
+<dt class="sig sig-object py" id="apkproxy.ApkProxy.proxy">
+<span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apkproxy.html#ApkProxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apkproxy.ApkProxy.proxy" title="Link to this definition"></a></dt>
+<dd><p>Proxy an apk request.</p>
 </dd></dl>
 
 </dd></dl>

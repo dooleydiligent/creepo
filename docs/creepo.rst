@@ -54,10 +54,10 @@ pipproxy module
    :show-inheritance:
 
 
-Module contents
+apkproxy module
 ---------------
 
-.. automodule:: creepo
+.. automodule:: apkproxy
    :members:
    :undoc-members:
    :show-inheritance:
