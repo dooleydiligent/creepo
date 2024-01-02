@@ -6,6 +6,7 @@
 #
 #no_cache: False
 #
+log_level: 'DEBUG'
 port: 4443
 # docker:
 #     registry: 'https://docker.tuscawilla.local:32000'
@@ -27,4 +28,9 @@ dynamic:
   apk: 
     registry: 'https://dl-cdn.alpinelinux.org/alpine/'
   v2: 
-    registry: 'https://registry-1.docker.io'
+    registry: 'https://docker.tuscawilla.local:32000'
+    cacert: '/home/lane/git/creepo/demo/docker/docker.tuscawilla.local.crt'
+    credentials:
+        username: 'docker'
+        password: 'password'
+

@@ -10,26 +10,29 @@ import cherrypy
 from composerproxy import ComposerProxy
 from pipproxy import PipProxy
 from npmproxy import NpmProxy
-from genericproxy import GenericProxy
+from simpleproxy import SimpleProxy
 
 # this file's parent directory
 PROJECT_DIR = Path(Path(__file__).parent.resolve().absolute()
                    ).parent.resolve().absolute()
 
 if __name__ == '__main__':
-    logging.getLogger().setLevel(logging.DEBUG)
+
     logger = cherrypy.log.error_log
-    logger.setLevel(logging.DEBUG)
-    logger.propagate = True
 
     config = {}
     if os.path.exists('config.yml'):
-        logger.info('Configuring from file')
         with open(f"{PROJECT_DIR}/config.yml", encoding="utf-8") as file:
             config = yaml.safe_load(file.read())
     else:
         logger.info('No config found - all defaults accepted')
+    if config.get('log_level') is None:
+        config['log_level'] = logging.INFO
 
+    logging.getLogger().setLevel(config['log_level'])
+    logger.setLevel(config['log_level'])
+    logger.propagate = True
+    logger.info('log_level set to %s', config['log_level'])
     config['logger'] = logger
 
     if 'port' not in config:
@@ -78,7 +81,7 @@ if __name__ == '__main__':
 
     for k in config['dynamic']:
         config[k] = config['dynamic'][k]
-        cherrypy.tree.graft(GenericProxy(config, k).proxy, f"/{k}")
+        cherrypy.tree.graft(SimpleProxy(config, k).proxy, f"/{k}")
 
     cherrypy.tree.mount(None, '/',
                         {
