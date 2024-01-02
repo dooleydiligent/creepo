@@ -47,15 +47,23 @@
 <li><a class="reference internal" href="#">creepo package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-httpproxy">httpproxy module</a><ul>
-<li><a class="reference internal" href="#httpproxy.Proxy"><code class="docutils literal notranslate"><span class="pre">Proxy</span></code></a><ul>
-<li><a class="reference internal" href="#httpproxy.Proxy.base"><code class="docutils literal notranslate"><span class="pre">Proxy.base</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.getheaders"><code class="docutils literal notranslate"><span class="pre">Proxy.getheaders()</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.gethttp"><code class="docutils literal notranslate"><span class="pre">Proxy.gethttp()</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.kind"><code class="docutils literal notranslate"><span class="pre">Proxy.kind</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.mimetype"><code class="docutils literal notranslate"><span class="pre">Proxy.mimetype()</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.no_cache"><code class="docutils literal notranslate"><span class="pre">Proxy.no_cache</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.persist"><code class="docutils literal notranslate"><span class="pre">Proxy.persist()</span></code></a></li>
-<li><a class="reference internal" href="#httpproxy.Proxy.proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.proxy()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy"><code class="docutils literal notranslate"><span class="pre">HttpProxy</span></code></a><ul>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.base"><code class="docutils literal notranslate"><span class="pre">HttpProxy.base</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.dynamic_config"><code class="docutils literal notranslate"><span class="pre">HttpProxy.dynamic_config()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.getheaders"><code class="docutils literal notranslate"><span class="pre">HttpProxy.getheaders()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.gethttp"><code class="docutils literal notranslate"><span class="pre">HttpProxy.gethttp()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.kind"><code class="docutils literal notranslate"><span class="pre">HttpProxy.kind</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.mimetype"><code class="docutils literal notranslate"><span class="pre">HttpProxy.mimetype()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.no_cache"><code class="docutils literal notranslate"><span class="pre">HttpProxy.no_cache</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.persist"><code class="docutils literal notranslate"><span class="pre">HttpProxy.persist()</span></code></a></li>
+<li><a class="reference internal" href="#httpproxy.HttpProxy.rest_proxy"><code class="docutils literal notranslate"><span class="pre">HttpProxy.rest_proxy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-simpleproxy">simpleproxy module</a><ul>
+<li><a class="reference internal" href="#simpleproxy.SimpleProxy"><code class="docutils literal notranslate"><span class="pre">SimpleProxy</span></code></a><ul>
+<li><a class="reference internal" href="#simpleproxy.SimpleProxy.proxy"><code class="docutils literal notranslate"><span class="pre">SimpleProxy.proxy()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -64,20 +72,6 @@
 <li><a class="reference internal" href="#composerproxy.ComposerProxy"><code class="docutils literal notranslate"><span class="pre">ComposerProxy</span></code></a><ul>
 <li><a class="reference internal" href="#composerproxy.ComposerProxy.callback"><code class="docutils literal notranslate"><span class="pre">ComposerProxy.callback()</span></code></a></li>
 <li><a class="reference internal" href="#composerproxy.ComposerProxy.proxy"><code class="docutils literal notranslate"><span class="pre">ComposerProxy.proxy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-dockerproxy">dockerproxy module</a><ul>
-<li><a class="reference internal" href="#dockerproxy.DockerProxy"><code class="docutils literal notranslate"><span class="pre">DockerProxy</span></code></a><ul>
-<li><a class="reference internal" href="#dockerproxy.DockerProxy.proxy"><code class="docutils literal notranslate"><span class="pre">DockerProxy.proxy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-mvnproxy">mvnproxy module</a><ul>
-<li><a class="reference internal" href="#mvnproxy.MavenProxy"><code class="docutils literal notranslate"><span class="pre">MavenProxy</span></code></a><ul>
-<li><a class="reference internal" href="#mvnproxy.MavenProxy.proxy"><code class="docutils literal notranslate"><span class="pre">MavenProxy.proxy()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -94,13 +88,6 @@
 <li><a class="reference internal" href="#pipproxy.PipProxy"><code class="docutils literal notranslate"><span class="pre">PipProxy</span></code></a><ul>
 <li><a class="reference internal" href="#pipproxy.PipProxy.callback"><code class="docutils literal notranslate"><span class="pre">PipProxy.callback()</span></code></a></li>
 <li><a class="reference internal" href="#pipproxy.PipProxy.proxy"><code class="docutils literal notranslate"><span class="pre">PipProxy.proxy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-creepo">Module contents</a><ul>
-<li><a class="reference internal" href="#creepo.Creepo"><code class="docutils literal notranslate"><span class="pre">Creepo</span></code></a><ul>
-<li><a class="reference internal" href="#creepo.Creepo.hello"><code class="docutils literal notranslate"><span class="pre">Creepo.hello()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -140,61 +127,126 @@
 </section>
 <section id="module-httpproxy">
 <span id="httpproxy-module"></span><h2>httpproxy module<a class="headerlink" href="#module-httpproxy" title="Link to this heading"></a></h2>
-<p>The httpproxy module exposes class <cite>Proxy</cite>, which is the base request endpoint.</p>
+<p>The httpproxy module exposes <a class="reference internal" href="#httpproxy.HttpProxy" title="httpproxy.HttpProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">HttpProxy</span></code></a>, whose <code class="xref py py-meth docutils literal notranslate"><span class="pre">httpproxy.rest_proxy()</span></code>
+method handles each request.</p>
 <p>By default the httpproxy module expects to support secure transmission protocols.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="httpproxy.Proxy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">httpproxy.</span></span><span class="sig-name descname"><span class="pre">Proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">httpproxy.</span></span><span class="sig-name descname"><span class="pre">HttpProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The http proxy</p>
 <p>By default this class does not persist anything.</p>
 <p>Enable persistence by setting the global configuration option <cite>no_cache</cite> = <strong>False</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – The global Creepo config</p></li>
+<li><p><strong>key</strong> – The storage key <strong>AND</strong> path prefix</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py property">
-<dt class="sig sig-object py" id="httpproxy.Proxy.base">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base</span></span><a class="headerlink" href="#httpproxy.Proxy.base" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.base">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base</span></span><a class="headerlink" href="#httpproxy.HttpProxy.base" title="Link to this definition"></a></dt>
 <dd><p>The base path to storage</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="httpproxy.Proxy.getheaders">
-<span class="sig-name descname"><span class="pre">getheaders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.getheaders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.getheaders" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.dynamic_config">
+<span class="sig-name descname"><span class="pre">dynamic_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy.dynamic_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy.dynamic_config" title="Link to this definition"></a></dt>
+<dd><p>convenience method to generate a new config for a dynamic proxy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.getheaders">
+<span class="sig-name descname"><span class="pre">getheaders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy.getheaders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy.getheaders" title="Link to this definition"></a></dt>
 <dd><p>convenience method to get the proper headers for the request</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="httpproxy.Proxy.gethttp">
-<span class="sig-name descname"><span class="pre">gethttp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.gethttp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.gethttp" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.gethttp">
+<span class="sig-name descname"><span class="pre">gethttp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy.gethttp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy.gethttp" title="Link to this definition"></a></dt>
 <dd><p>convenience method to configure the http request engine</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="httpproxy.Proxy.kind">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#httpproxy.Proxy.kind" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.kind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#httpproxy.HttpProxy.kind" title="Link to this definition"></a></dt>
 <dd><p>The kind of proxy</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="httpproxy.Proxy.mimetype">
-<span class="sig-name descname"><span class="pre">mimetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.mimetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.mimetype" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.mimetype">
+<span class="sig-name descname"><span class="pre">mimetype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy.mimetype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy.mimetype" title="Link to this definition"></a></dt>
 <dd><p>Return the default mimetype for the proxy</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="httpproxy.Proxy.no_cache">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no_cache</span></span><a class="headerlink" href="#httpproxy.Proxy.no_cache" title="Link to this definition"></a></dt>
-<dd><p>The no_cache property for this <a class="reference internal" href="#httpproxy.Proxy" title="httpproxy.Proxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></a></p>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.no_cache">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no_cache</span></span><a class="headerlink" href="#httpproxy.HttpProxy.no_cache" title="Link to this definition"></a></dt>
+<dd><p>The no_cache property for this <code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="httpproxy.Proxy.persist">
-<span class="sig-name descname"><span class="pre">persist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.persist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.persist" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.persist">
+<span class="sig-name descname"><span class="pre">persist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy.persist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy.persist" title="Link to this definition"></a></dt>
 <dd><p>Persist the (possibly changed) data</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="httpproxy.Proxy.proxy">
-<span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#Proxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.Proxy.proxy" title="Link to this definition"></a></dt>
-<dd><p>The proxy method is the work engine for everything, including caching, if enabled</p>
+<dt class="sig sig-object py" id="httpproxy.HttpProxy.rest_proxy">
+<span class="sig-name descname"><span class="pre">rest_proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/httpproxy.html#HttpProxy.rest_proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#httpproxy.HttpProxy.rest_proxy" title="Link to this definition"></a></dt>
+<dd><p>The rest_proxy method is the work engine for everything</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>environ</strong> – The request Dictionary</p></li>
+<li><p><strong>start_response</strong> – The CherryPy callback</p></li>
+</ul>
+</dd>
+</dl>
+<p>When environ contains a callback function that callback will be called
+after the initial request.</p>
+<p>The callback might change the content.  For this reason we replace the
+Content-Length header after the callback.</p>
+<p>The (potentially modified) response is returned to the caller as a
+byte array at request[‘response’]</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simpleproxy">
+<span id="simpleproxy-module"></span><h2>simpleproxy module<a class="headerlink" href="#module-simpleproxy" title="Link to this heading"></a></h2>
+<p>A simple proxy which does no callback.</p>
+<p>This class supports docker, maven, and apk proxies</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="simpleproxy.SimpleProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simpleproxy.</span></span><span class="sig-name descname"><span class="pre">SimpleProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simpleproxy.html#SimpleProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simpleproxy.SimpleProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#httpproxy.HttpProxy" title="httpproxy.HttpProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">HttpProxy</span></code></a></p>
+<p>A simple proxy for use with any repository which implements a simple REST interface,
+such as maven and apk.  In the current code it is also used for docker, although
+docker requires a global kludge (docker must only be mounted at /v2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – The global Creepo config</p></li>
+<li><p><strong>key</strong> – The storage key prefix.  The key is also the &#64;cherrypy.expose endpoint, below</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="simpleproxy.SimpleProxy.proxy">
+<span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simpleproxy.html#SimpleProxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simpleproxy.SimpleProxy.proxy" title="Link to this definition"></a></dt>
+<dd><p>Proxy a request</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>environ</strong> – The CherryPy request object</p></li>
+<li><p><strong>start_response</strong> – The WSGI callback</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -242,41 +294,6 @@ to self-relative urls</p>
 </dd></dl>
 
 </section>
-<section id="module-dockerproxy">
-<span id="dockerproxy-module"></span><h2>dockerproxy module<a class="headerlink" href="#module-dockerproxy" title="Link to this heading"></a></h2>
-<p>A docker proxy</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="dockerproxy.DockerProxy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dockerproxy.</span></span><span class="sig-name descname"><span class="pre">DockerProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dockerproxy.html#DockerProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dockerproxy.DockerProxy" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A docker proxy</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="dockerproxy.DockerProxy.proxy">
-<span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dockerproxy.html#DockerProxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dockerproxy.DockerProxy.proxy" title="Link to this definition"></a></dt>
-<dd><p>Proxy a docker request.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-mvnproxy">
-<span id="mvnproxy-module"></span><h2>mvnproxy module<a class="headerlink" href="#module-mvnproxy" title="Link to this heading"></a></h2>
-<p>Apache maven - proxy <a class="reference external" href="https://repo.maven.apache.org/maven2">https://repo.maven.apache.org/maven2</a> for use by java,
-scala, gradle, and similar tools</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="mvnproxy.MavenProxy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mvnproxy.</span></span><span class="sig-name descname"><span class="pre">MavenProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mvnproxy.html#MavenProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mvnproxy.MavenProxy" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A maven proxy</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mvnproxy.MavenProxy.proxy">
-<span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mvnproxy.html#MavenProxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mvnproxy.MavenProxy.proxy" title="Link to this definition"></a></dt>
-<dd><p>Proxy a maven request.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-npmproxy">
 <span id="npmproxy-module"></span><h2>npmproxy module<a class="headerlink" href="#module-npmproxy" title="Link to this heading"></a></h2>
 <p>An npm proxy</p>
@@ -318,23 +335,6 @@ scala, gradle, and similar tools</p>
 <dt class="sig sig-object py" id="pipproxy.PipProxy.proxy">
 <span class="sig-name descname"><span class="pre">proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipproxy.html#PipProxy.proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipproxy.PipProxy.proxy" title="Link to this definition"></a></dt>
 <dd><p>Proxy a pip repo request.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-creepo">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-creepo" title="Link to this heading"></a></h2>
-<p>The creepo class</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="creepo.Creepo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">creepo.</span></span><span class="sig-name descname"><span class="pre">Creepo</span></span><a class="reference internal" href="_modules/creepo.html#Creepo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creepo.Creepo" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The Creepo class</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="creepo.Creepo.hello">
-<span class="sig-name descname"><span class="pre">hello</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/creepo.html#Creepo.hello"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creepo.Creepo.hello" title="Link to this definition"></a></dt>
-<dd><p>A simple hello method</p>
 </dd></dl>
 
 </dd></dl>

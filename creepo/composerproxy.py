@@ -9,7 +9,7 @@ import urllib.parse
 from urllib.parse import urlparse
 import cherrypy
 
-from httpproxy import Proxy
+from httpproxy import HttpProxy
 
 
 class ComposerProxy:
@@ -42,7 +42,7 @@ class ComposerProxy:
             self.config[self.key] = {
                 'registry': 'https://packagist.org', 'self': 'https://localhost:4443/p2'}
 
-        self._proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = HttpProxy(self.config, self.key)
         self.logger.debug('ComposerProxy instantiated with %s',
                           self.config[self.key])
 
@@ -55,7 +55,8 @@ class ComposerProxy:
         to self-relative urls
 
         """
-        self.logger.debug('%s received type(%s) as %s ', __name__, type(_input_bytes), _input_bytes)
+        self.logger.debug('%s received type(%s) as %s ',
+                          __name__, type(_input_bytes), _input_bytes)
         data = json.load(io.BytesIO(_input_bytes))
 
         for package in data['packages']:
@@ -81,8 +82,8 @@ class ComposerProxy:
         Creepo exposes a WSGI-compliant server at /p2
         """
         path = environ["REQUEST_URI"]
-        if path == '/p2/packages.json':
-            path = environ["REQUEST_URI"].removeprefix("/p2")
+        if path == f"/{self.key}/packages.json":
+            path = environ["REQUEST_URI"].removeprefix(f"/{self.key}")
 
         self.logger.debug('%s %s composer(%s)', __name__,
                           cherrypy.request.method, path)
@@ -108,9 +109,8 @@ class ComposerProxy:
                 newrequest['path'] = newpath.replace('&', '?', 1)
             else:
                 newrequest['path'] = newpath
-
-            dynamic_proxy = Proxy(
-                __name__, {'registry': f"{new_remote.scheme}://{new_remote.netloc}"}, self.config)
+            dynamic_proxy = HttpProxy(self._proxy.dynamic_config(
+                f"{new_remote.scheme}://{new_remote.netloc}"), self.key)
 
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__,
@@ -118,7 +118,7 @@ class ComposerProxy:
 
             newrequest['content_type'] = dynamic_proxy.mimetype(
                 newpath.split('?')[0], 'text/html')
-            return dynamic_proxy.proxy(newrequest, start_response)
+            return dynamic_proxy.rest_proxy(newrequest, start_response)
 
         newrequest['content_type'] = self._proxy.mimetype(
             path, 'application/octet-stream')
@@ -126,4 +126,4 @@ class ComposerProxy:
         newrequest['path'] = newpath
         newrequest['storage'] = self.key
         newrequest['callback'] = self.callback
-        return self._proxy.proxy(newrequest, start_response)
+        return self._proxy.rest_proxy(newrequest, start_response)

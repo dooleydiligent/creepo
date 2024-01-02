@@ -9,7 +9,7 @@ import mime
 
 import cherrypy
 
-from httpproxy import Proxy
+from httpproxy import HttpProxy
 
 
 class NpmProxy:  # pylint: disable=fixme
@@ -22,7 +22,7 @@ class NpmProxy:  # pylint: disable=fixme
         if self.key not in self.config:
             self.config[self.key] = {'registry': 'https://registry.npmjs.org'}
 
-        self._proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = HttpProxy(self.config, self.key)
         self.logger.debug('NpmProxy instantiated with %s',
                           self.config[self.key])
 
@@ -57,7 +57,7 @@ class NpmProxy:  # pylint: disable=fixme
     @cherrypy.expose
     def proxy(self, environ, start_response):
         '''Proxy an npm request.'''
-        path = environ["REQUEST_URI"].removeprefix("/npm")
+        path = environ["REQUEST_URI"].removeprefix(f"/{self.key}")
         newpath = path
 
         newrequest = {}
@@ -71,18 +71,23 @@ class NpmProxy:  # pylint: disable=fixme
 
         if len(path.split('?')) == 2:
             new_remote = urlparse(path.split('?')[1])
-            newrequest['storage'] = 'npm/tarballs'
+            newrequest['storage'] = f"{self.key}/tarballs"
+            # The base proxy will remove the prefix
             newrequest['path'] = new_remote.path
-            newhost = f"{new_remote.scheme}://{new_remote.netloc}"
+            new_host = f"{new_remote.scheme}://{new_remote.netloc}"
             self.logger.info(
-                '%s Create new proxy with host %s and path %s', __name__, newhost, new_remote.path)
-            dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
-            return dynamic_proxy.proxy(newrequest, start_response)
+                '%s Create new proxy with host %s and path %s', __name__, new_host, new_remote.path)
+            print(
+                f"type(new_remote.path) is {type(new_remote.path)} {new_remote.path}")
+            dynamic_proxy = HttpProxy(
+                self._proxy.dynamic_config(new_host), self.key)
+
+            return dynamic_proxy.rest_proxy(newrequest, start_response)
 
         newrequest['path'] = newpath
         newrequest['storage'] = 'npm'
         newrequest['content_type'] = 'application/octet-stream'
         self.logger.info('%s Requesting file %s', __name__, newpath)
-        newrequest['logger'] = self.logger
+        newrequest['logger'] = self._proxy.logger
         newrequest['callback'] = self.callback
-        return self._proxy.proxy(newrequest, start_response)
+        return self._proxy.rest_proxy(newrequest, start_response)

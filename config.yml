@@ -6,17 +6,31 @@
 #
 #no_cache: False
 #
+log_level: 'DEBUG'
 port: 4443
-docker:
+# docker:
+#     registry: 'https://docker.tuscawilla.local:32000'
+#     cacert: '/home/lane/git/creepo/demo/docker/docker.tuscawilla.local.crt'
+#     credentials:
+#         username: 'docker'
+#         password: 'password'
+
+# m2:
+#     registry: 'https://repo.maven.apache.org/maven2'
+    # cacert: '/path/to/upstream/cacert.crt'
+    # credentials:
+        # username: 'when required by the upstream'
+        # password: 'when required by the upstream'
+
+dynamic:
+  m2: 
+    registry: 'https://repo.maven.apache.org/maven2'
+  apk: 
+    registry: 'https://dl-cdn.alpinelinux.org/alpine/'
+  v2: 
     registry: 'https://docker.tuscawilla.local:32000'
     cacert: '/home/lane/git/creepo/demo/docker/docker.tuscawilla.local.crt'
     credentials:
         username: 'docker'
         password: 'password'
 
-m2:
-    registry: 'https://repo.maven.apache.org/maven2'
-    # cacert: '/path/to/upstream/cacert.crt'
-    # credentials:
-        # username: 'when required by the upstream'
-        # password: 'when required by the upstream'

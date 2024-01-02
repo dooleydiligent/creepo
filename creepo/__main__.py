@@ -7,32 +7,32 @@ import yaml
 
 import cherrypy
 
-from dockerproxy import DockerProxy
 from composerproxy import ComposerProxy
-
-from apkproxy import ApkProxy
-from mvnproxy import MavenProxy
 from pipproxy import PipProxy
 from npmproxy import NpmProxy
+from simpleproxy import SimpleProxy
 
 # this file's parent directory
 PROJECT_DIR = Path(Path(__file__).parent.resolve().absolute()
                    ).parent.resolve().absolute()
 
 if __name__ == '__main__':
-    logging.getLogger().setLevel(logging.DEBUG)
+
     logger = cherrypy.log.error_log
-    logger.setLevel(logging.DEBUG)
-    logger.propagate = True
 
     config = {}
     if os.path.exists('config.yml'):
-        logger.info('Configuring from file')
         with open(f"{PROJECT_DIR}/config.yml", encoding="utf-8") as file:
             config = yaml.safe_load(file.read())
     else:
         logger.info('No config found - all defaults accepted')
+    if config.get('log_level') is None:
+        config['log_level'] = logging.INFO
 
+    logging.getLogger().setLevel(config['log_level'])
+    logger.setLevel(config['log_level'])
+    logger.propagate = True
+    logger.info('log_level set to %s', config['log_level'])
     config['logger'] = logger
 
     if 'port' not in config:
@@ -61,8 +61,8 @@ if __name__ == '__main__':
         'server.ssl_certificate_chain': client,
     })
 
-    logger.debug('instantiating mavenProxy at /m2')
-    cherrypy.tree.graft(MavenProxy(config).proxy, '/m2')
+    # logger.debug('instantiating mavenProxy at /m2')
+    # cherrypy.tree.graft(MavenProxy(config).proxy, '/m2')
 
     logger.debug('instantiating proxy at /npm')
     cherrypy.tree.graft(NpmProxy(config).proxy, '/npm')
@@ -70,14 +70,18 @@ if __name__ == '__main__':
     logger.debug('instantiating pipproxy at /pip')
     cherrypy.tree.graft(PipProxy(config).proxy, '/pip')
 
-    logger.debug('instantiating dockerproxy at /v2')
-    cherrypy.tree.graft(DockerProxy(config).proxy, '/v2')
+    # logger.debug('instantiating dockerproxy at /v2')
+    # cherrypy.tree.graft(GenericProxy(config).proxy, '/v2')
 
     logger.debug('instantiating composerproxy at /composer')
     cherrypy.tree.graft(ComposerProxy(config).proxy, '/p2')
 
-    logger.debug('instantiating apkproxy at /alpine')
-    cherrypy.tree.graft(ApkProxy(config).proxy, '/alpine')
+    # logger.debug('instantiating apkproxy at /alpine')
+    # cherrypy.tree.graft(ApkProxy(config).proxy, '/alpine')
+
+    for k in config['dynamic']:
+        config[k] = config['dynamic'][k]
+        cherrypy.tree.graft(SimpleProxy(config, k).proxy, f"/{k}")
 
     cherrypy.tree.mount(None, '/',
                         {
