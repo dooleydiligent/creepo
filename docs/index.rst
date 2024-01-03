@@ -39,8 +39,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-A secondary division
-====================
-
-This just has some text
