@@ -6,7 +6,7 @@ from unittest.mock import patch
 from diskcache import Cache
 
 from mocks import MockedLogger, MockedPoolManager
-from creepo.httpproxy import Proxy
+from creepo.httpproxy import HttpProxy
 
 
 class TestHttpProxyCache(unittest.TestCase):
@@ -38,10 +38,14 @@ class TestHttpProxyCache(unittest.TestCase):
                     mock_poolmanager.return_value = MockedPoolManager(
                         status_code=200, response_headers={}, content=content)
 
-                    proxy = Proxy(
-                        "test", {'registry': 'https://some.random.url/path:10111'}, {'no_cache': 'False'})
+                    proxy = HttpProxy(
+                        {
+                            'no_cache': 'False', 'logger': request['logger'],
+                            'test':
+                            {'registry': 'https://some.random.url/path:10111'}
+                        }, 'test')
 
-                    result = proxy.proxy(
+                    result = proxy.rest_proxy(
                         request, start_ok_response)
                     #
                     # Note: Leave both of the next two 'print' statements in place to facilitate debugging
@@ -66,7 +70,7 @@ class TestHttpProxyCache(unittest.TestCase):
                             testdata, content, "Expected the actual response to have been cached but found something else")
 
                     # Subsequent requests work slightly differently
-                    result = proxy.proxy(request, start_ok_response)
+                    result = proxy.rest_proxy(request, start_ok_response)
 
     def test_no_cache_true(self):
         """Test persistence"""
@@ -95,10 +99,14 @@ class TestHttpProxyCache(unittest.TestCase):
                     mock_poolmanager.return_value = MockedPoolManager(
                         status_code=200, response_headers={}, content=content)
 
-                    proxy = Proxy(
-                        "test", {'registry': 'https://some.random.url/path:10111'}, {})
+                    proxy = HttpProxy(
+                        {
+                            'logger': request['logger'],
+                            'test':
+                            {'registry': 'https://some.random.url/path:10111'}
+                        }, 'test')
 
-                    result = proxy.proxy(request, start_response)
+                    result = proxy.rest_proxy(request, start_response)
                     #
                     # Note: Leave both of the next two 'print' statements in place to facilitate debugging
                     #       ATM I speculate that request['response'] does not get populated until the "result"

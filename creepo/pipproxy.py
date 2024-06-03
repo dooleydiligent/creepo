@@ -4,7 +4,7 @@ import lxml.etree as ET
 
 import cherrypy
 
-from httpproxy import Proxy
+from httpproxy import HttpProxy
 
 
 class PipProxy:
@@ -23,7 +23,7 @@ class PipProxy:
             self.config[self.key] = {
                 'registry': 'https://pypi.org/simple', 'self': f"https://{self.config['server']}:{self.config['port']}/pip"}
 
-        self._proxy = Proxy(__name__, self.config[self.key], self.config)
+        self._proxy = HttpProxy(self.config, self.key)
         self.logger.debug('PipProxy instantiated with %s',
                           self.config[self.key])
 
@@ -49,8 +49,7 @@ class PipProxy:
     @cherrypy.expose
     def proxy(self, environ, start_response):
         '''Proxy a pip repo request.'''
-        path = environ["REQUEST_URI"].removeprefix("/pip")
-        self.logger.info('%s The request.uri is %s', __name__, path)
+        path = environ["REQUEST_URI"].removeprefix(f"/{self.key}")
 
         newrequest = {}
         newrequest['method'] = cherrypy.request.method
@@ -66,10 +65,19 @@ class PipProxy:
             newhost = 'https://files.pythonhosted.org'
             self.logger.info(
                 '%s Create new proxy with host %s and path %s', __name__, newhost, path)
-            dynamic_proxy = Proxy(__name__, {'registry': newhost}, self.config)
-            return dynamic_proxy.proxy(newrequest, start_response)
+
+            dynamic_config = {
+                'no_cache': self._proxy.no_cache,
+                'logger': self.config['logger'],
+                f"{self.key}": {
+                    'registry': newhost,
+                }
+            }
+            dynamic_proxy = HttpProxy(dynamic_config, self.key)
+
+            return dynamic_proxy.rest_proxy(newrequest, start_response)
 
         newrequest['storage'] = self.key
         newrequest['logger'] = self.logger
         newrequest['callback'] = self.callback
-        return self._proxy.proxy(newrequest, start_response)
+        return self._proxy.rest_proxy(newrequest, start_response)

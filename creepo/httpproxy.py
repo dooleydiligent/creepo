@@ -1,5 +1,6 @@
 """
-The httpproxy module exposes class `Proxy`, which is the base request endpoint.
+The httpproxy module exposes :py:class:`HttpProxy`, whose :py:meth:`httpproxy.rest_proxy` 
+method handles each request.
 
 By default the httpproxy module expects to support secure transmission protocols.
 """
@@ -12,41 +13,44 @@ import urllib3
 from urllib3 import ProxyManager, make_headers
 
 
-class Proxy:
+class HttpProxy:
     """
     The http proxy
 
     By default this class does not persist anything.
 
     Enable persistence by setting the global configuration option `no_cache` = **False**
+
+    :param config: The global Creepo config
+
+    :param key: The storage key **AND** path prefix
+
     """
 
-    def __init__(self, _kind, config, global_config):
-        self.cache = None
-        self._kind = _kind
+    def __init__(self, config, key):
+        self.key = key
         self.config = config
         self._no_cache = True
+        self.logger = config['logger']
 
-        if global_config.get('no_cache') is not None:
-            if f"{global_config.get('no_cache')}" == 'False':
+        if config.get('no_cache') is not None:
+            if f"{config.get('no_cache')}" == 'False':
                 self._no_cache = False
 
-        self._upstream = config['registry']
-        self._upstream_url = urllib3.util.parse_url(config['registry'])
-        self._creepo = os.path.join(os.environ.get('HOME'), '.CREEPO_BASE')
+        self.creepo = os.path.join(os.environ.get('HOME'), '.CREEPO_BASE')
 
         if os.environ.get('CREEPO_BASE') is not None:
-            self._creepo = os.environ.get('CREEPO_BASE')
+            self.creepo = os.environ.get('CREEPO_BASE')
 
     @property
     def base(self):
         """The base path to storage"""
-        return self._creepo
+        return f"{self.creepo}/{self.key}"
 
     @property
     def kind(self):
         """The kind of proxy"""
-        return self._kind
+        return self.key
 
     @property
     def no_cache(self):
@@ -87,6 +91,7 @@ class Proxy:
     def getheaders(self, environ):
         """convenience method to get the proper headers for the request"""
         headers = environ['headers']
+
         headers['content-type'] = self.mimetype(
             environ['path'], environ['content_type'])
         if self.config.get('credentials') is not None:
@@ -95,9 +100,36 @@ class Proxy:
                 self.config.get('credentials').get('password')
             )
         return headers
-    def proxy(self, environ, start_response):
-        """The proxy method is the work engine for everything, including caching, if enabled"""
-        environ['output_filename'] = f"{environ['storage']}{environ['path']}"
+
+    def dynamic_config(self, new_host):
+        """convenience method to generate a new config for a dynamic proxy"""
+        return {
+            'no_cache': self.no_cache,
+            'logger': self.config['logger'],
+            f"{self.key}": {
+                'registry': new_host,
+            }
+        }
+
+    def rest_proxy(self, environ, start_response):
+        """
+        The rest_proxy method is the work engine for everything
+
+        :param environ: The request Dictionary
+
+        :param start_response: The CherryPy callback
+
+
+        When environ contains a callback function that callback will be called 
+        after the initial request.
+
+        The callback might change the content.  For this reason we replace the 
+        Content-Length header after the callback.
+
+        The (potentially modified) response is returned to the caller as a 
+        byte array at request['response']
+        """
+        environ['output_filename'] = environ['path']
 
         callback = environ.get('callback')
 
@@ -105,58 +137,50 @@ class Proxy:
             http = self.gethttp()
             headers = self.getheaders(environ)
 
-            source_url = f"{self._upstream}{environ['path']}"
+            source_url = f"{self.config[self.key]['registry']}{environ['path']}"
 
             splitpath = environ['output_filename'].split('/')
+
             if not source_url.endswith('/'):
                 # Remove the filename
                 splitpath.pop()
-            file_path = '/'.join(splitpath)
 
-            if file_path:
-                if environ['path'].endswith('/'):
-                    environ['output_filename'] = environ['output_filename'] + '.index'
-                environ['logger'].info('Making the request for %s', source_url)
-                r = http.request(
-                    method='GET',
-                    url=source_url,
-                    decode_content=False,
-                    preload_content=False,
-                    headers=headers,
-                )
+            if environ['path'].endswith('/'):
+                environ['output_filename'] = environ['output_filename'] + '.index'
+            r = http.request(
+                method='GET',
+                url=source_url,
+                decode_content=False,
+                preload_content=False,
+                headers=headers,
+            )
 
-                if r.status < 400:
-                    if callback is not None:
-                        # The callback must set request['response']
-                        callback(r.data, environ)
+            if r.status < 400:
+                if callback is not None:
+                    # The callback must set request['response']
+                    callback(r.data, environ)
 
-                        r.headers.discard('Content-Length')
+                    r.headers.discard('Content-Length')
 
-                        start_response(
-                            f"{r.status} {responses[r.status]}",
-                            list(r.headers.items()))
-                        yield environ['response']
-                    else:
-                        start_response(
-                            f"{r.status} {responses[r.status]}", list(r.headers.items()))
-                        yield r.data
-                        environ['response'] = r.data
+                    start_response(
+                        f"{r.status} {responses[r.status]}",
+                        list(r.headers.items()))
+                    yield environ['response']
                 else:
-                    environ['logger'].warning(
-                        '%s.%s ***WARNING***: Unexpected status %d for %s',
-                        self._kind, __name__, r.status, source_url)
-                    print(
-                        '%s.%s ***WARNING***: Unexpected status %d for %s',
-                        self._kind, __name__, r.status, source_url)
                     start_response(
                         f"{r.status} {responses[r.status]}", list(r.headers.items()))
                     yield r.data
-                r.release_conn()
-                if not self.no_cache and environ.get('response') is not None:
-                    self.persist(environ)
+                    environ['response'] = r.data
             else:
-                environ['logger'].warning(
-                    '%s.%s WARNING: There is no file_path for %s', self._kind, __name__, source_url)
+                self.logger.warning(
+                    '%s.%s ***WARNING***: Unexpected status %d for %s',
+                    self.kind, __name__, r.status, source_url)
+                start_response(
+                    f"{r.status} {responses[r.status]}", list(r.headers.items()))
+                yield r.data
+            r.release_conn()
+            if not self.no_cache and environ.get('response') is not None:
+                self.persist(environ)
         else:
 
             start_response('200 OK', [
