@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 import ssl
+import threading
 import yaml
 
 import cherrypy
@@ -38,6 +39,9 @@ if __name__ == '__main__':
     if 'port' not in config:
         config['port'] = 4443
 
+    if 'server' not in config:
+        config['server'] = 'localhost'
+
     if 'proxy' in config:
         logger.info('Using global proxy at %s', config['proxy'])
 
@@ -51,14 +55,20 @@ if __name__ == '__main__':
         f.close()
         logger.info(
             'Use the following certificate to secure your client(s)\n\n%s\n\n', output)
+    
+    thread_pool = 10
+    if 'thread_pool' in config:
+        thread_pool = config['thread_pool']
+    logger.info(f'Setting thread pool to {thread_pool}')
 
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',
         'server.socket_port': config['port'],
-        'server.ssl_module': 'pyopenssl',
+        'server.ssl_module': 'builtin',
         'server.ssl_certificate': cert,
         'server.ssl_private_key': key,
         'server.ssl_certificate_chain': client,
+        'server.thread_pool': thread_pool
     })
 
     logger.debug('instantiating mavenProxy at /m2')

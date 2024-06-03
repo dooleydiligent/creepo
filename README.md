@@ -36,9 +36,9 @@ git clone git@github.com:dooleydiligent/creepo.git
 cd creepo
 ```
 ### Build in docker
-
+Note: Use DOCKER_MIRROR to override the default mirror, which otherwise resolves to **registry-1.docker.io**
 ```
-docker build . -t creepo
+docker build -t creepo --build-arg DOCKER_MIRROR=192.168.1.143:5000 .
 ```
 ### Run in docker
 
@@ -145,6 +145,11 @@ composer install
 
 Using this [configuration](./config.yml)
 ```
+# We don't handle concurrency very well, but will one day
+thread_pool: 10
+#
+# port: 8443
+# server: <Must be supplied.  This cannot be reliably guessed yet>
 # 
 # docker:
 #     registry: 'https://docker.tuscawilla.local:32000'

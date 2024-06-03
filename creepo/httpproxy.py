@@ -101,7 +101,7 @@ class Proxy:
 
         callback = environ.get('callback')
 
-        if self.no_cache or Cache(self.base).get(environ['output_filename']) is None:
+        if self.no_cache or Cache(self.base).get(environ['output_filename']) is None or "force_request" in environ:
             http = self.gethttp()
             headers = self.getheaders(environ)
 
@@ -116,6 +116,7 @@ class Proxy:
             if file_path:
                 if environ['path'].endswith('/'):
                     environ['output_filename'] = environ['output_filename'] + '.index'
+                environ['logger'].info('Making the request for %s', source_url)
                 r = http.request(
                     method='GET',
                     url=source_url,
