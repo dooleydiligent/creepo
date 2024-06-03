@@ -1,4 +1,5 @@
-FROM python:3.10-slim
+ARG DOCKER_MIRROR=docker.io
+FROM $DOCKER_MIRROR/library/python:3.10-slim
 
 ADD README.md /app/
 ADD LICENSE /app/

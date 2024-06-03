@@ -14,16 +14,21 @@ class PipProxy:
         self.logger = config['logger']
         self.config = config
         self.key = 'pip'
+        if not 'server' in config:
+            config['server'] = 'localhost'
+        if not 'port' in config:
+            config['port'] = 4443
+            
         if self.key not in self.config:
             self.config[self.key] = {
-                'registry': 'https://pypi.org/simple', 'self': 'https://localhost:4443/pip'}
+                'registry': 'https://pypi.org/simple', 'self': f"https://{self.config['server']}:{self.config['port']}/pip"}
 
         self._proxy = HttpProxy(self.config, self.key)
         self.logger.debug('PipProxy instantiated with %s',
                           self.config[self.key])
 
     def callback(self, _input_bytes, request):
-        """write the file to disk"""
+        """callback - preprocess the file"""
         parser = ET.XMLParser(recover=True)
         doc = _input_bytes
         tree = ET.fromstring(doc, parser=parser)

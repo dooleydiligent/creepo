@@ -38,9 +38,14 @@ class ComposerProxy:
         self.logger = config['logger']
         self.config = config
         self.key = 'p2'
+        if not 'server' in config:
+            config['server'] = 'localhost'
+        if not 'port' in config:
+            config['port'] = 4443
+
         if self.key not in self.config:
             self.config[self.key] = {
-                'registry': 'https://packagist.org', 'self': 'https://localhost:4443/p2'}
+                'registry': 'https://packagist.org', 'self': f"https://{self.config['server']}:{self.config['port']}/p2"}
 
         self._proxy = HttpProxy(self.config, self.key)
         self.logger.debug('ComposerProxy instantiated with %s',

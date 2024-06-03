@@ -133,7 +133,7 @@ class HttpProxy:
 
         callback = environ.get('callback')
 
-        if self.no_cache or Cache(self.base).get(environ['output_filename']) is None:
+        if self.no_cache or Cache(self.base).get(environ['output_filename']) is None or "force_request" in environ:
             http = self.gethttp()
             headers = self.getheaders(environ)
 
