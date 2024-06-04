@@ -31,49 +31,48 @@ class NpmProxy:  # pylint: disable=fixme
     def callback(self, _input_bytes, request):
         """callback - preprocess the file"""
         data = ""
-        if 'Content-Type' in request and request['Content-Type'] != 'application/x-gtar':
-            data = json.load(io.BytesIO(_input_bytes))
-            for version in data["versions"]:
-                dist = data["versions"][version]["dist"]
-                if dist:
-                    tarball = dist["tarball"]
-                    if tarball:
-                        # Point the client back to us for resolution.
-                        new_tarball = urllib3.util.Url(
-                            scheme="https",
-                            host=self.config[
-                                "server"
-                            ],  # TODO: get the listening public ip from config
-                            port=self.config["port"],
-                            path="/npm/tarballs/",
-                            query=tarball,
-                        )
-                        data["versions"][version]["dist"]["tarball"] = str(new_tarball)
-                    else:
-                        self.logger.warning(
-                            "%s Did not find tarball for %s", __name__, version
-                        )
+        if not 'content_type' in request:
+            self.logger.warning(f"npm proxy callback: NO CONTENT-TYPE for request {request['path']}")
+        else:
+            if request['content_type'] != 'application/json':
+                self.logger.info(f"npm proxy callbak: Unexpected content-type {request['content_type']} for request {request['path']}: Content:{_input_bytes}")
+
+        data = json.load(io.BytesIO(_input_bytes))
+        for version in data["versions"]:
+            dist = data["versions"][version]["dist"]
+            if dist:
+                tarball = dist["tarball"]
+                if tarball:
+                    # Point the client back to us for resolution.
+                    new_tarball = urllib3.util.Url(
+                        scheme="https",
+                        host=self.config["server"],
+                        port=self.config["port"],
+                        path="/npm/tarballs/",
+                        query=tarball,
+                    )
+                    data["versions"][version]["dist"]["tarball"] = str(new_tarball)
                 else:
                     self.logger.warning(
-                        "%s Did not find dist for %s", __name__, version
+                        "%s Did not find tarball for %s", __name__, version
                     )
-            request["response"] = bytes(json.dumps(data), "utf-8")
-        else:
-            self.logger.debug(f"Content-type is application/x-gtar for {request['path']}")
-            request["response"] = _input_bytes
+            else:
+                self.logger.warning(
+                    "%s Did not find dist for %s", __name__, version
+                )
+        request["response"] = bytes(json.dumps(data), "utf-8")
 
 
     @cherrypy.expose
     def proxy(self, environ, start_response):
         '''Proxy an npm request.'''
+        self.logger.debug(f"npm: {environ['REQUEST_URI']}")
         path = environ["REQUEST_URI"].removeprefix(f"/{self.key}")
         newpath = path
 
         newrequest = {}
-        if len(mime.Types.of(path)) > 0:
-            newrequest["content_type"] = mime.Types.of(path)[0].content_type
-        if not "content_type" in newrequest:
-            newrequest["content_type"] = "application/octet-stream"
+        if 'Content-Type' in environ:
+            newrequest['content_type'] = environ['Content-Type']
 
         newrequest["method"] = cherrypy.request.method
         newrequest["headers"] = cherrypy.request.headers
@@ -81,10 +80,12 @@ class NpmProxy:  # pylint: disable=fixme
         newrequest["logger"] = self.logger
 
         if len(newpath.split('?')) == 2:
+            # Don't set the callback because the result is not preprocessed
             new_remote = urlparse(unquote(newpath).split('?')[1])
 
-            newrequest['storage'] = f"{self.key}/tarballs"
             # The base proxy will remove the prefix
+            newrequest['storage'] = f"{self.key}/tarballs"
+
             # It is not clear where this contamination occurs :(
             if new_remote.path.endswith("="):
                 newrequest["path"] = new_remote.path[:-1]
@@ -92,10 +93,9 @@ class NpmProxy:  # pylint: disable=fixme
                 newrequest["path"] = new_remote.path
 
             new_host = f"{new_remote.scheme}://{new_remote.netloc}"
-            self.logger.info(
+            self.logger.debug(
                 '%s Create new proxy with host %s and path %s', __name__, new_host, new_remote.path)
-            print(
-                f"type(new_remote.path) is {type(new_remote.path)} {new_remote.path}")
+
             dynamic_proxy = HttpProxy(
                 self._proxy.dynamic_config(new_host), self.key)
 
@@ -103,10 +103,10 @@ class NpmProxy:  # pylint: disable=fixme
 
         newrequest['path'] = newpath
         newrequest['storage'] = 'npm'
-        newrequest['content_type'] = 'application/octet-stream'
-        self.logger.info('%s Requesting file %s', __name__, newpath)
-        newrequest['logger'] = self._proxy.logger
+
+        self.logger.debug('%s Requesting file %s', __name__, newpath)
         newrequest['callback'] = self.callback
+
         # Always refresh the package document (until ttl is implemented)
         newrequest["force_request"] = True
         return self._proxy.rest_proxy(newrequest, start_response)

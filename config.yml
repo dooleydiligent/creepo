@@ -4,10 +4,12 @@
 #
 # By default we do not cache anything
 #
-#no_cache: False
+no_cache: False
+thread_pool: 10
+log_level: DEBUG
 #
-log_level: 'DEBUG'
-port: 4443
+port: 8443
+server: 192.168.1.143
 # docker:
 #     registry: 'https://docker.tuscawilla.local:32000'
 #     cacert: '/home/lane/git/creepo/demo/docker/docker.tuscawilla.local.crt'
@@ -17,20 +19,18 @@ port: 4443
 
 # m2:
 #     registry: 'https://repo.maven.apache.org/maven2'
-    # cacert: '/path/to/upstream/cacert.crt'
-    # credentials:
-        # username: 'when required by the upstream'
-        # password: 'when required by the upstream'
+#     # cacert: '/path/to/upstream/cacert.crt'
+#     # credentials:
+#         # username: 'when required by the upstream'
+#         # password: 'when required by the upstream'
 
-dynamic:
-  m2: 
-    registry: 'https://repo.maven.apache.org/maven2'
-  apk: 
-    registry: 'https://dl-cdn.alpinelinux.org/alpine/'
-  v2: 
-    registry: 'https://docker.tuscawilla.local:32000'
-    cacert: '/home/lane/git/creepo/demo/docker/docker.tuscawilla.local.crt'
-    credentials:
-        username: 'docker'
-        password: 'password'
+npm: 
+  registry: 'https://registry.npmjs.org'
+pip:
+  registry: 'https://pypi.org/simple'
 
+# dynamic:
+#   m2: 
+#     registry: 'https://repo.maven.apache.org/maven2'
+#   apk: 
+#     registry: 'https://dl-cdn.alpinelinux.org/alpine/'

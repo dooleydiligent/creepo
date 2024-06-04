@@ -53,20 +53,28 @@ class SimpleProxy(HttpProxy):  # pylint: disable=too-few-public-methods
         newpath = path
 
         headers = {}
-        headers['User-Agent'] = environ['HTTP_USER_AGENT']
-        if environ.get('HTTP_ACCEPT') is not None:
+        if 'HTTP_USER_AGENT' in environ:
+            headers['User-Agent'] = environ['HTTP_USER_AGENT']
+        if 'HTTP_ACCEPT' in environ:
             headers['Accept'] = environ['HTTP_ACCEPT']
-        if environ.get('HTTP_ACCEPT_ENCODING') is not None:
+        if 'HTTP_ACCEPT_ENCODING' in environ:
             headers['Accept-Encoding'] = environ['HTTP_ACCEPT_ENCODING']
 
         newrequest = {}
-        if len(mime.Types.of(path)) > 0:
-            newrequest['content_type'] = mime.Types.of(path)[
-                0].content_type
-        else:
-            newrequest['content_type'] = 'application/json'
-        headers['Content-Type'] = newrequest['content_type']
 
+        if 'Content-Type' in environ:
+            headers['content_type'] = environ['Content-Type']
+
+        if not 'content_type' in headers:
+            if len(mime.Types.of(path)) > 0:
+                headers['content_type'] = mime.Types.of(path)[
+                    0].content_type
+            else:
+                headers['content_type'] = 'application/json'
+
+        headers['Content-Type'] = headers['content_type']
+        
+        newrequest['content_type'] = headers['content_type']
         newrequest['method'] = cherrypy.request.method
         newrequest['path'] = newpath
         newrequest['headers'] = HTTPHeaderDict(headers)

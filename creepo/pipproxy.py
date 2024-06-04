@@ -51,6 +51,7 @@ class PipProxy:
         '''Proxy a pip repo request.'''
         path = environ["REQUEST_URI"].removeprefix(f"/{self.key}")
 
+        self.logger.info(f"/pip Requesting {path}")
         newrequest = {}
         newrequest['method'] = cherrypy.request.method
         newrequest['headers'] = cherrypy.request.headers

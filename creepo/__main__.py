@@ -17,6 +17,15 @@ from simpleproxy import SimpleProxy
 PROJECT_DIR = Path(Path(__file__).parent.resolve().absolute()
                    ).parent.resolve().absolute()
 
+@cherrypy.tools.register('before_finalize', priority=60)
+def secureheaders():
+    print("secureheaders")
+    headers = cherrypy.response.headers
+    headers['X-Frame-Options'] = 'DENY'
+    headers['X-XSS-Protection'] = '1; mode=block'
+    headers['Content-Security-Policy'] = "default-src 'self';"              
+    headers['Strict-Transport-Security'] = 'max-age=31536000'     
+
 if __name__ == '__main__':
 
     logger = cherrypy.log.error_log
@@ -64,11 +73,16 @@ if __name__ == '__main__':
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',
         'server.socket_port': config['port'],
+        'server.protocol_version': 'HTTP/1.1',
         'server.ssl_module': 'builtin',
         'server.ssl_certificate': cert,
         'server.ssl_private_key': key,
         'server.ssl_certificate_chain': client,
-        'server.thread_pool': thread_pool
+        'server.thread_pool': thread_pool,
+        'tools.secureheaders.on': True,
+        'tools.sessions.on':  True,
+        'tools.sessions.secure': True,
+        'tools.sessions.httponly': True,
     })
 
     # logger.debug('instantiating mavenProxy at /m2')

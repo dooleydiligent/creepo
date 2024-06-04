@@ -92,7 +92,7 @@ class HttpProxy:
         """convenience method to get the proper headers for the request"""
         headers = environ['headers']
 
-        headers['content-type'] = self.mimetype(
+        headers['content_type'] = self.mimetype(
             environ['path'], environ['content_type'])
         if self.config.get('credentials') is not None:
             headers = headers | urllib3.make_headers(
@@ -132,6 +132,13 @@ class HttpProxy:
         environ['output_filename'] = environ['path']
 
         callback = environ.get('callback')
+
+        if not 'content_type' in environ:
+            if len(mime.Types.of(environ['path'])) > 0:
+                environ["content_type"] = mime.Types.of(environ['path'])[0].content_type
+            if not "content_type" in environ:
+                # self.logger.warning(f"Could not set content type for {environ['path']}")
+                environ["content_type"] = "application/json"
 
         if self.no_cache or Cache(self.base).get(environ['output_filename']) is None or "force_request" in environ:
             http = self.gethttp()
