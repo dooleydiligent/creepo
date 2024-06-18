@@ -1,3 +1,5 @@
 venv/
 __pycache__
 _build/composer.phar
+dist
+*.crt
