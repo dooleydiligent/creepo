@@ -3,3 +3,5 @@ __pycache__
 _build/composer.phar
 dist
 *.crt
+.coverage
+.CREEPO_BASE
